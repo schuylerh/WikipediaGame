@@ -1,0 +1,6 @@
+openai-api-type: azure
+openai-api-key: d859c21e7e70492db3a7e3a0494c110c
+openai-api-base: https://oai-workspace-02.openai.azure.com/
+openai-api-version: 2023-05-15
+openai-api-deployment-id: gpt4
+model: gpt-4
