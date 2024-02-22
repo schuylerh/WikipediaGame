@@ -17,7 +17,7 @@ def get_links(page_url):
     print(f"Found {len(links)} links on page: {page_url}")
     return links
 
-def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Carl_Friedrich_Gauss"):
+def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation"):
     queue = [(start_page, [start_page], 0)]
     discovered = set()
     logs = []
