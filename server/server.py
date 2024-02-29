@@ -3,13 +3,18 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import crawler
 
+RATE_LIMIT = "5/minute"  # requests per minute and IP address
+
 app = Flask(__name__, static_folder='../client')
+# Initialize the Limiter object correctly with named arguments
+limiter = Limiter(app=app, key_func=get_remote_address)
 
 @app.route('/', methods=['GET'])
 def home():
     return send_from_directory(app.static_folder, 'index.html')
 
 @app.route('/find_path', methods=['POST'])
+@limiter.limit(RATE_LIMIT)
 def find_path():
     try:
         data = request.get_json()
