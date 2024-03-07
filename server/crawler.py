@@ -26,7 +26,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
     # breadth first search
     start_time = time.time()
     elapsed_time = time.time() - start_time
-    while queue and elapsed_time < TIMEOUT and not stop_search:  
+    while queue and elapsed_time < TIMEOUT and not stop_search: 
         (vertex, path, depth) = queue.pop(0)
         for next in set(get_links(vertex)) - discovered:
             if next == finish_page:
@@ -60,6 +60,6 @@ class TimeoutErrorWithLogs(Exception):
         self.time = time
         self.discovered = discovered
 
-def stop_search():
+def stop_searching():
     global stop_search
     stop_search = True
