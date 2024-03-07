@@ -48,5 +48,12 @@ def stream_logs():
             yield f"data: {log}\n\n"
     return Response(generate(), mimetype='text/event-stream')
 
+from crawler import stop_searching
+
+@app.route('/stop_search', methods=['POST'])
+def stop_search():
+    stop_searching()
+    return 'Search stopped.'
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, threaded=True)
