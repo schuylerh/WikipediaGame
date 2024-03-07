@@ -2,6 +2,9 @@ import time
 import requests
 from bs4 import BeautifulSoup
 import re
+from gensim.models import Word2Vec
+import numpy as np
+from queue import PriorityQueue
 
 TIMEOUT = 999999  # time limit in seconds for the search
 stop_search = False  # control variable for stopping the search
@@ -22,10 +25,28 @@ def get_links(page_url):
     print(f"Found {len(links)} links on page: {page_url}")
     return links
 
+def calculate_similarity(page1, page2):
+    # Extract words from the URLs
+    words1 = page1.split('/')[-1].split('_')
+    words2 = page2.split('/')[-1].split('_')
+
+    # Load the Word2Vec model
+    model = Word2Vec.load('path_to_your_model')
+
+    # Get the word embeddings
+    embeddings1 = [model[word] for word in words1 if word in model]
+    embeddings2 = [model[word] for word in words2 if word in model]
+
+    # Calculate the cosine similarity
+    similarity = np.dot(np.mean(embeddings1, axis=0), np.mean(embeddings2, axis=0)) / (np.linalg.norm(np.mean(embeddings1, axis=0)) * np.linalg.norm(np.mean(embeddings2, axis=0)))
+
+    return similarity
+
 def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation"):
     global stop_search
     stop_search = False
-    queue = [(start_page, [start_page], 0)]
+    queue = PriorityQueue()
+    queue.put((1, (start_page, [start_page], 0)))
     discovered = set()
     logs = []
 
@@ -33,7 +54,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
     start_time = time.time()
     elapsed_time = time.time() - start_time
     while queue and elapsed_time < TIMEOUT and not stop_search: 
-        (vertex, path, depth) = queue.pop(0)
+        (_, (vertex, path, depth)) = queue.get()
         for next in set(get_links(vertex)) - discovered:
             if next == finish_page:
                 log = f"Found finish page: {next}"
@@ -48,7 +69,8 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                 print(log)
                 logs.append(log)
                 discovered.add(next)
-                queue.append((next, path + [next], depth + 1))
+                similarity = calculate_similarity(next, finish_page)
+                queue.put((1 - similarity, (next, path + [next], depth + 1)))  # Use 1 - similarity because PriorityQueue returns the smallest items first
         elapsed_time = time.time() - start_time
     logs.append(f"Search took {elapsed_time} seconds.")
     print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
