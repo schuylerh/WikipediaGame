@@ -50,37 +50,42 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
     discovered = set()
     logs = []
 
-    # breadth first search
-    start_time = time.time()
-    elapsed_time = time.time() - start_time
-    while queue and elapsed_time < TIMEOUT and not stop_search: 
-        (_, (vertex, path, depth)) = queue.get()
-        for next in set(get_links(vertex)) - discovered:
-            if next == finish_page:
-                log = f"Found finish page: {next}"
-                print(log)
-                logs.append(log)
-                logs.append(f"Search took {elapsed_time} seconds.")
-                print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
-                logs.append(f"Discovered pages: {len(discovered)}")
-                return path + [next], logs, elapsed_time, len(discovered) # return with success
-            else:
-                log = f"Adding link to queue: {next} (depth {depth})"
-                print(log)
-                logs.append(log)
-                discovered.add(next)
-                similarity = calculate_similarity(next, finish_page)
-                queue.put((1 - similarity, (next, path + [next], depth + 1)))  # Use 1 - similarity because PriorityQueue returns the smallest items first
+    try:
+        # breadth first search
+        start_time = time.time()
         elapsed_time = time.time() - start_time
-    logs.append(f"Search took {elapsed_time} seconds.")
-    print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
-    logs.append(f"Discovered pages: {len(discovered)}")
-    if stop_search:
-        logs.append("Search was stopped by user.")
-        print("Search was stopped by user.")
-        return [], logs, elapsed_time, len(discovered)  # return with stop message
-    else:
-        raise TimeoutErrorWithLogs("Search exceeded time limit.", logs, elapsed_time, len(discovered))
+        while queue and elapsed_time < TIMEOUT and not stop_search: 
+            (_, (vertex, path, depth)) = queue.get()
+            for next in set(get_links(vertex)) - discovered:
+                if next == finish_page:
+                    log = f"Found finish page: {next}"
+                    print(log)
+                    logs.append(log)
+                    logs.append(f"Search took {elapsed_time} seconds.")
+                    print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
+                    logs.append(f"Discovered pages: {len(discovered)}")
+                    return path + [next], logs, elapsed_time, len(discovered) # return with success
+                else:
+                    log = f"Adding link to queue: {next} (depth {depth})"
+                    print(log)
+                    logs.append(log)
+                    discovered.add(next)
+                    similarity = calculate_similarity(next, finish_page)
+                    queue.put((1 - similarity, (next, path + [next], depth + 1)))  # Use 1 - similarity because PriorityQueue returns the smallest items first
+            elapsed_time = time.time() - start_time
+        logs.append(f"Search took {elapsed_time} seconds.")
+        print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
+        logs.append(f"Discovered pages: {len(discovered)}")
+        if stop_search:
+            logs.append("Search was stopped by user.")
+            print("Search was stopped by user.")
+            return [], logs, elapsed_time, len(discovered)  # return with stop message
+        else:
+            raise TimeoutErrorWithLogs("Search exceeded time limit.", logs, elapsed_time, len(discovered))
+    except Exception as e:
+        logs.append(f"Error occurred: {str(e)}")
+        print(f"Error occurred: {str(e)}")
+        return [], logs, elapsed_time, len(discovered)  # return with error message
 class TimeoutErrorWithLogs(Exception):
     def __init__(self, message, logs, time, discovered):
         super().__init__(message)
