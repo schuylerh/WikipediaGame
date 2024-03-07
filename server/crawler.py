@@ -60,6 +60,7 @@ class TimeoutErrorWithLogs(Exception):
         self.time = time
         self.discovered = discovered
 
-def stop_searching():
-    global stop_search
-    stop_search = True
+@app.route('/stop_search', methods=['POST'])
+def stop_search():
+    stop_searching()
+    return 'Search stopped.'
