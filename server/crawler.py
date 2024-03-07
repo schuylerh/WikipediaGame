@@ -26,7 +26,11 @@ def get_links(page_url):
     return links
 
 def calculate_similarity(page1, page2):
-    return 1.0
+    model = Word2Vec.load('correct_path_to_your_model')
+    vector1 = np.mean([model[word] for word in page1 if word in model.wv.vocab], axis=0)
+    vector2 = np.mean([model[word] for word in page2 if word in model.wv.vocab], axis=0)
+    cosine = np.dot(vector1, vector2) / (np.linalg.norm(vector1) * np.linalg.norm(vector2))
+    return cosine
 
 def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation"):
     global stop_search
