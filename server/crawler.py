@@ -31,7 +31,7 @@ def calculate_similarity(page1, page2):
     words2 = page2.split('/')[-1].split('_')
 
     # Load the Word2Vec model
-    model = Word2Vec.load('correct_path_to_your_model')
+    model = Word2Vec.load('actual_path_to_your_model')
 
     # Get the word embeddings
     embeddings1 = [model[word] for word in words1 if word in model]
