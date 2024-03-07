@@ -26,21 +26,7 @@ def get_links(page_url):
     return links
 
 def calculate_similarity(page1, page2):
-    # Extract words from the URLs
-    words1 = page1.split('/')[-1].split('_')
-    words2 = page2.split('/')[-1].split('_')
-
-    # Load the Word2Vec model
-    model = Word2Vec.load('actual_path_to_your_model')
-
-    # Get the word embeddings
-    embeddings1 = [model[word] for word in words1 if word in model]
-    embeddings2 = [model[word] for word in words2 if word in model]
-
-    # Calculate the cosine similarity
-    similarity = np.dot(np.mean(embeddings1, axis=0), np.mean(embeddings2, axis=0)) / (np.linalg.norm(np.mean(embeddings1, axis=0)) * np.linalg.norm(np.mean(embeddings2, axis=0)))
-
-    return similarity
+    return 1.0
 
 def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation"):
     global stop_search
