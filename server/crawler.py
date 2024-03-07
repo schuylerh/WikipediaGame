@@ -6,6 +6,10 @@ import re
 TIMEOUT = 999999  # time limit in seconds for the search
 stop_search = False  # control variable for stopping the search
 
+def stop_searching():
+    global stop_search
+    stop_search = True
+
 def get_links(page_url):
     print(f"Fetching page: {page_url}")
     response = requests.get(page_url)
