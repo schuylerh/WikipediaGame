@@ -23,6 +23,8 @@ def get_links(page_url):
     return links
 
 def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation"):
+    global stop_search
+    stop_search = False
     queue = [(start_page, [start_page], 0)]
     discovered = set()
     logs = []
