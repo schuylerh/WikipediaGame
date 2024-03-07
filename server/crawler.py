@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import re
 
 TIMEOUT = 999999  # time limit in seconds for the search
+stop_search = False  # control variable for stopping the search
 
 def get_links(page_url):
     print(f"Fetching page: {page_url}")
@@ -25,7 +26,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
     # breadth first search
     start_time = time.time()
     elapsed_time = time.time() - start_time
-    while queue and elapsed_time < TIMEOUT:  
+    while queue and elapsed_time < TIMEOUT and not stop_search:  
         (vertex, path, depth) = queue.pop(0)
         for next in set(get_links(vertex)) - discovered:
             if next == finish_page:
@@ -46,10 +47,19 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
     logs.append(f"Search took {elapsed_time} seconds.")
     print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
     logs.append(f"Discovered pages: {len(discovered)}")
-    raise TimeoutErrorWithLogs("Search exceeded time limit.", logs, elapsed_time, len(discovered))
+    if stop_search:
+        logs.append("Search was stopped by user.")
+        print("Search was stopped by user.")
+        return [], logs, elapsed_time, len(discovered)  # return with stop message
+    else:
+        raise TimeoutErrorWithLogs("Search exceeded time limit.", logs, elapsed_time, len(discovered))
 class TimeoutErrorWithLogs(Exception):
     def __init__(self, message, logs, time, discovered):
         super().__init__(message)
         self.logs = logs
         self.time = time
         self.discovered = discovered
+
+def stop_search():
+    global stop_search
+    stop_search = True
