@@ -27,6 +27,9 @@ def preprocess_text(text):
     return ' '.join(words)
 
 def get_links(page_url):
+    if not page_url or not page_url.startswith('http'):
+        print(f"Invalid or empty URL: {page_url}")
+        return tuple([]), ""
     try:
         print(f"Fetching page: {page_url}")
         response = requests.get(page_url)
