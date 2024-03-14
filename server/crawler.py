@@ -26,7 +26,7 @@ def preprocess_text(text):
     words = [word for word in words if word not in stop_words]
     return ' '.join(words)
 
-def get_links(page_url):
+def get_links(page_url, start_page, finish_page):
     if not page_url or not page_url.startswith('http'):
         print(f"Invalid or empty URL: {page_url}")
         return tuple([]), ""
@@ -74,7 +74,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
         queue.append((start_page, [start_page], 0))
         while queue and elapsed_time < TIMEOUT and not stop_search:
             vertex, path, depth = queue.popleft()
-            links, text = get_links(vertex)
+            links, text = get_links(vertex, start_page, finish_page)
             for next in links:
                 if next not in discovered:
                     if next == finish_page:
