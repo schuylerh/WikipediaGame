@@ -40,6 +40,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
     discovered = set()
     logs = []
     link_dict = {}  # Add this line
+    similarity_dict = {}  # Add this line
 
     try:
         # breadth first search
