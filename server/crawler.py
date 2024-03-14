@@ -5,6 +5,10 @@ import re
 from collections import deque
 import heapq
 from collections import Counter
+import string
+import nltk
+from nltk.corpus import stopwords
+nltk.download('stopwords')
 
 TIMEOUT = 999999  # time limit in seconds for the search
 stop_search = False  # control variable for stopping the search
