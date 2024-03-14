@@ -41,7 +41,7 @@ def precompute_heuristic(start_page, finish_page, model):
     heuristic_dict = {}
     links = get_links(start_page)
     for link in links:
-        heuristic_dict[link] = calculate_similarity(link, finish_page)
+        heuristic_dict[link] = calculate_similarity(link, finish_page, model)
     return heuristic_dict
 
 def find_path(start_page, model, finish_page="https://en.wikipedia.org/wiki/Cultivation"):
