@@ -39,6 +39,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
     queue.append((start_page, [start_page], 0))
     discovered = set()
     logs = []
+    link_dict = {}  # Add this line
 
     try:
         # breadth first search
