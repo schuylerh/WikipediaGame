@@ -1,3 +1,4 @@
+# Schuyler Huang
 # Project 3: Wikipedia Game Improvement Proposal
 ## Proposal to Improve WikipediaGame
 Currently, the code fetches and processes pages one at a time. My proposal is speeding this up by fetching and processing multiple pages in parallel. 
