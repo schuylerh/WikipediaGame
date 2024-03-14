@@ -6,6 +6,7 @@ from gensim.models import Word2Vec
 import numpy as np
 from collections import deque
 import gensim
+import heapq
 
 # Load the Word2Vec model
 model_path = "/Users/schuyler/Documents/CPSC_Courses/406/WikipediaGame/GoogleNews-vectors-negative300.bin.gz"
@@ -28,7 +29,7 @@ def get_links(page_url):
     # print(f"All links found: {all_links}")
     links = [link for link in all_links if re.match(r'^https://en\.wikipedia\.org/wiki/[^:]*$', link) and '#' not in link]
     print(f"Found {len(links)} links on page: {page_url}")
-    return links
+    return links, soup.get_text()  # Return the text of the page for preprocessing
 
 def calculate_similarity(page1, page2):
     vector1 = np.mean([model[word] for word in page1 if word in model.key_to_index], axis=0)
@@ -55,13 +56,14 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
     similarity_dict = {}  # Add this line
 
     try:
-        # breadth first search
+        # A* search
         start_time = time.time()
         elapsed_time = time.time() - start_time
+        queue = [(0, start_page, [start_page], 0)]  # Initialize the queue as a priority queue
         while queue and elapsed_time < TIMEOUT and not stop_search: 
-            (vertex, path, depth) = queue.popleft()
-            links = link_dict.get(vertex, get_links(vertex))
-            link_dict[vertex] = links
+            (priority, vertex, path, depth) = heapq.heappop(queue)  # Use heapq.heappop to get the vertex with the highest priority
+            links, text = link_dict.get(vertex, get_links(vertex))  # Get the links and the text of the page
+            link_dict[vertex] = (links, text)  # Store the links and the text of the page
             for next in set(links) - discovered:
                 if next == finish_page:
                     log = f"Found finish page: {next}"
@@ -79,7 +81,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                     similarity = similarity_dict.get(next, calculate_similarity(next, finish_page))
                     if next not in similarity_dict:
                         similarity_dict[next] = similarity
-                    queue.append((next, path + [next], depth + 1))
+                    heapq.heappush(queue, (1/similarity, next, path + [next], depth + 1))  # Use heapq.heappush to add the vertex to the queue with priority 1/similarity
             elapsed_time = time.time() - start_time
         logs.append(f"Search took {elapsed_time} seconds.")
         print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
