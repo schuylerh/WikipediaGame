@@ -2,6 +2,7 @@
 # Project 3: Wikipedia Game Improvement Proposal
 ## Proposal to Improve WikipediaGame
 Currently, the code fetches and processes pages one at a time. My proposal is speeding this up by fetching and processing multiple pages in parallel. 
+A benchmark would be required and how it is comparable to the original BFS
 ## Parallelization
 Parallelization in computing is the process of carrying out multiple operations or tasks simultaneously. It's a way of speeding up computation by dividing a problem into sub-problems and solving these sub-problems at the same time.
 ## Implementation
