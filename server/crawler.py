@@ -17,6 +17,15 @@ def stop_searching():
     global stop_search
     stop_search = True
 
+def preprocess_text(text):
+    "preprocess the text by converting to lowercase, removing punctuation, and removing common words"
+    text = text.lower()
+    text = text.translate(str.maketrans('', '', string.punctuation))
+    stop_words = set(stopwords.words('english'))
+    words = text.split()
+    words = [word for word in words if word not in stop_words]
+    return ' '.join(words)
+
 def get_links(page_url):
     print(f"Fetching page: {page_url}")
     response = requests.get(page_url)
@@ -24,10 +33,10 @@ def get_links(page_url):
     soup = BeautifulSoup(response.text, 'html.parser')
     from urllib.parse import urljoin
     all_links = [urljoin(page_url, a['href']) for a in soup.find_all('a', href=True) if '#' not in a['href']]
-    # print(f"All links found: {all_links}")
     links = [link for link in all_links if re.match(r'^https://en\.wikipedia\.org/wiki/[^:]*$', link) and '#' not in link]
     print(f"Found {len(links)} links on page: {page_url}")
-    return links, soup.get_text()  # Return the text of the page for preprocessing
+    text = preprocess_text(soup.get_text())
+    return links, text
 
 
 def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation"):
