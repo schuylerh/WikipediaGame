@@ -31,21 +31,8 @@ def get_links(page_url):
     print(f"Found {len(links)} links on page: {page_url}")
     return links, soup.get_text()  # Return the text of the page for preprocessing
 
-def calculate_similarity(page1, page2, model):
-    vector1 = np.mean([model[word] for word in page1 if word in model.key_to_index], axis=0)
-    vector2 = np.mean([model[word] for word in page2 if word in model.key_to_index], axis=0)
-    cosine_similarity = np.dot(vector1, vector2) / (np.linalg.norm(vector1) * np.linalg.norm(vector2))
-    return cosine_similarity
-
-def precompute_heuristic(start_page, finish_page, model):
-    heuristic_dict = {}
-    links = get_links(start_page)
-    for link in links:
-        heuristic_dict[link] = calculate_similarity(link, finish_page, model)
-    return heuristic_dict
 
 def find_path(start_page, model, finish_page="https://en.wikipedia.org/wiki/Cultivation"):
-    heuristic_dict = precompute_heuristic(start_page, finish_page, model)
     global stop_search
     stop_search = False
     queue = deque()
@@ -59,9 +46,10 @@ def find_path(start_page, model, finish_page="https://en.wikipedia.org/wiki/Cult
         # A* search
         start_time = time.time()
         elapsed_time = time.time() - start_time
-        queue = [(0, start_page, [start_page], 0)]  # Initialize the queue as a priority queue
-        while queue and elapsed_time < TIMEOUT and not stop_search: 
-            (priority, vertex, path, depth) = heapq.heappop(queue)  # Use heapq.heappop to get the vertex with the highest priority
+        queue = deque()
+        queue.append((start_page, [start_page], 0))
+        while queue and elapsed_time < TIMEOUT and not stop_search:
+            vertex, path, depth = queue.popleft()
             links, text = link_dict.get(vertex, get_links(vertex))  # Get the links and the text of the page
             link_dict[vertex] = (links, text)  # Store the links and the text of the page
             for next in set(links) - discovered:
@@ -78,10 +66,7 @@ def find_path(start_page, model, finish_page="https://en.wikipedia.org/wiki/Cult
                     print(log)
                     logs.append(log)
                     discovered.add(next)
-                    similarity = similarity_dict.get(next, calculate_similarity(next, finish_page, model))
-                    if next not in similarity_dict:
-                        similarity_dict[next] = similarity
-                    heapq.heappush(queue, (1/similarity, next, path + [next], depth + 1))  # Use heapq.heappush to add the vertex to the queue with priority 1/similarity
+                    queue.append((next, path + [next], depth + 1))
             elapsed_time = time.time() - start_time
         logs.append(f"Search took {elapsed_time} seconds.")
         print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
