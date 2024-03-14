@@ -7,6 +7,10 @@ import numpy as np
 from collections import deque
 import gensim
 
+# Load the Word2Vec model
+model_path = "/Users/schuyler/Documents/CPSC_Courses/406/WikipediaGame/GoogleNews-vectors-negative300.bin.gz"
+model = gensim.models.KeyedVectors.load_word2vec_format(model_path, binary=True)
+
 TIMEOUT = 999999  # time limit in seconds for the search
 stop_search = False  # control variable for stopping the search
 
@@ -26,21 +30,21 @@ def get_links(page_url):
     print(f"Found {len(links)} links on page: {page_url}")
     return links
 
-def calculate_similarity(page1, page2, model):
+def calculate_similarity(page1, page2):
     vector1 = np.mean([model[word] for word in page1 if word in model.key_to_index], axis=0)
     vector2 = np.mean([model[word] for word in page2 if word in model.key_to_index], axis=0)
     cosine_similarity = np.dot(vector1, vector2) / (np.linalg.norm(vector1) * np.linalg.norm(vector2))
     return cosine_similarity
 
-def precompute_heuristic(start_page, finish_page):
+def precompute_heuristic(start_page, finish_page, model):
     heuristic_dict = {}
     links = get_links(start_page)
     for link in links:
-        heuristic_dict[link] = calculate_similarity(link, finish_page)
+        heuristic_dict[link] = calculate_similarity(link, finish_page, model)
     return heuristic_dict
 
-def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation"):
-    heuristic_dict = precompute_heuristic(start_page, finish_page)
+def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation", model):
+    heuristic_dict = precompute_heuristic(start_page, finish_page, model)
     global stop_search
     stop_search = False
     queue = deque()
