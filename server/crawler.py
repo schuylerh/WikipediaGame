@@ -26,14 +26,14 @@ def get_links(page_url):
     print(f"Found {len(links)} links on page: {page_url}")
     return links
 
-def calculate_similarity(page1, page2):
-    model = gensim.models.KeyedVectors.load_word2vec_format('/Users/schuyler/Documents/CPSC_Courses/406/WikipediaGame/GoogleNews-vectors-negative300.bin.gz', binary=True)
+def calculate_similarity(page1, page2, model):
     vector1 = np.mean([model[word] for word in page1 if word in model.key_to_index], axis=0)
     vector2 = np.mean([model[word] for word in page2 if word in model.key_to_index], axis=0)
     cosine = np.dot(vector1, vector2) / (np.linalg.norm(vector1) * np.linalg.norm(vector2))
     return cosine
 
 def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation"):
+    model = gensim.models.KeyedVectors.load_word2vec_format('/Users/schuyler/Documents/CPSC_Courses/406/WikipediaGame/GoogleNews-vectors-negative300.bin.gz', binary=True)
     global stop_search
     stop_search = False
     queue = deque()
@@ -65,7 +65,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                     print(log)
                     logs.append(log)
                     discovered.add(next)
-                    similarity = similarity_dict.get(next, calculate_similarity(next, finish_page))
+                    similarity = similarity_dict.get(next, calculate_similarity(next, finish_page, model))
                     similarity_dict[next] = similarity
                     queue.append((next, path + [next], depth + 1))
             elapsed_time = time.time() - start_time
