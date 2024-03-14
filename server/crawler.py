@@ -2,15 +2,8 @@ import time
 import requests
 from bs4 import BeautifulSoup
 import re
-from gensim.models import Word2Vec
-import numpy as np
 from collections import deque
-import gensim
 import heapq
-
-# Load the Word2Vec model
-model_path = "/Users/schuyler/Documents/CPSC_Courses/406/WikipediaGame/GoogleNews-vectors-negative300.bin.gz"
-model = gensim.models.KeyedVectors.load_word2vec_format(model_path, binary=True)
 
 TIMEOUT = 999999  # time limit in seconds for the search
 stop_search = False  # control variable for stopping the search
@@ -32,7 +25,7 @@ def get_links(page_url):
     return links, soup.get_text()  # Return the text of the page for preprocessing
 
 
-def find_path(start_page, model, finish_page="https://en.wikipedia.org/wiki/Cultivation"):
+def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation"):
     global stop_search
     stop_search = False
     queue = deque()
