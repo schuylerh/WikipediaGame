@@ -26,7 +26,7 @@ def get_links(page_url):
     return links
 
 def calculate_similarity(page1, page2):
-    model = gensim.models.KeyedVectors.load_word2vec_format('path_to_pretrained_model', binary=True)
+    model = gensim.models.KeyedVectors.load_word2vec_format('/Users/schuyler/Documents/CPSC_Courses/406/WikipediaGame/GoogleNews-vectors-negative300.bin.gz', binary=True)
     vector1 = np.mean([model[word] for word in page1 if word in model.vocab], axis=0)
     vector2 = np.mean([model[word] for word in page2 if word in model.vocab], axis=0)
     cosine = np.dot(vector1, vector2) / (np.linalg.norm(vector1) * np.linalg.norm(vector2))
