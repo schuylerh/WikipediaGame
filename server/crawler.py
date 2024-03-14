@@ -76,8 +76,9 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                     print(log)
                     logs.append(log)
                     discovered.add(next)
-                    similarity = heuristic_dict.get(next, calculate_similarity(next, finish_page))
-                    similarity_dict[next] = similarity
+                    similarity = similarity_dict.get(next, calculate_similarity(next, finish_page))
+                    if next not in similarity_dict:
+                        similarity_dict[next] = similarity
                     queue.append((next, path + [next], depth + 1))
             elapsed_time = time.time() - start_time
         logs.append(f"Search took {elapsed_time} seconds.")
