@@ -26,9 +26,11 @@ def get_links(page_url):
     print(f"Found {len(links)} links on page: {page_url}")
     return links
 
-def calculate_similarity(page1, page2):
-    common_words = set(page1).intersection(set(page2))
-    return len(common_words)
+def calculate_similarity(page1, page2, model):
+    vector1 = np.mean([model[word] for word in page1 if word in model.key_to_index], axis=0)
+    vector2 = np.mean([model[word] for word in page2 if word in model.key_to_index], axis=0)
+    cosine_similarity = np.dot(vector1, vector2) / (np.linalg.norm(vector1) * np.linalg.norm(vector2))
+    return cosine_similarity
 
 def precompute_heuristic(start_page, finish_page):
     heuristic_dict = {}
