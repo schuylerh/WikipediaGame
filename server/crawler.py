@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import re
 from gensim.models import Word2Vec
 import numpy as np
-from queue import PriorityQueue
+from collections import deque
 
 TIMEOUT = 999999  # time limit in seconds for the search
 stop_search = False  # control variable for stopping the search
@@ -35,8 +35,8 @@ def calculate_similarity(page1, page2):
 def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation"):
     global stop_search
     stop_search = False
-    queue = PriorityQueue()
-    queue.put((1, (start_page, [start_page], 0)))
+    queue = deque()
+    queue.append((start_page, [start_page], 0))
     discovered = set()
     logs = []
 
@@ -45,8 +45,10 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
         start_time = time.time()
         elapsed_time = time.time() - start_time
         while queue and elapsed_time < TIMEOUT and not stop_search: 
-            (_, (vertex, path, depth)) = queue.get()
-            for next in set(get_links(vertex)) - discovered:
+            (vertex, path, depth) = queue.popleft()
+            links = link_dict.get(vertex, get_links(vertex))
+            link_dict[vertex] = links
+            for next in set(links) - discovered:
                 if next == finish_page:
                     log = f"Found finish page: {next}"
                     print(log)
@@ -60,8 +62,9 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                     print(log)
                     logs.append(log)
                     discovered.add(next)
-                    similarity = calculate_similarity(next, finish_page)
-                    queue.put((1 - similarity, (next, path + [next], depth + 1)))  # Use 1 - similarity because PriorityQueue returns the smallest items first
+                    similarity = similarity_dict.get(next, calculate_similarity(next, finish_page))
+                    similarity_dict[next] = similarity
+                    queue.append((next, path + [next], depth + 1))
             elapsed_time = time.time() - start_time
         logs.append(f"Search took {elapsed_time} seconds.")
         print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
