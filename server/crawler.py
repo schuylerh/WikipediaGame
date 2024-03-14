@@ -27,16 +27,20 @@ def preprocess_text(text):
     return ' '.join(words)
 
 def get_links(page_url):
-    print(f"Fetching page: {page_url}")
-    response = requests.get(page_url)
-    print(f"Finished fetching page: {page_url}")
-    soup = BeautifulSoup(response.text, 'html.parser')
-    from urllib.parse import urljoin
-    all_links = [urljoin(page_url, a['href']) for a in soup.find_all('a', href=True) if '#' not in a['href']]
-    links = [link for link in all_links if re.match(r'^https://en\.wikipedia\.org/wiki/[^:]*$', link) and '#' not in link]
-    print(f"Found {len(links)} links on page: {page_url}")
-    text = preprocess_text(soup.get_text())
-    return links, text
+    try:
+        print(f"Fetching page: {page_url}")
+        response = requests.get(page_url)
+        print(f"Finished fetching page: {page_url}")
+        soup = BeautifulSoup(response.text, 'html.parser')
+        from urllib.parse import urljoin
+        all_links = [urljoin(page_url, a['href']) for a in soup.find_all('a', href=True) if '#' not in a['href']]
+        links = [link for link in all_links if re.match(r'^https://en\.wikipedia\.org/wiki/[^:]*$', link) and '#' not in link]
+        print(f"Found {len(links)} links on page: {page_url}")
+        text = preprocess_text(soup.get_text())
+        return links, text
+    except Exception as e:
+        print(f"Error occurred while fetching links from {page_url}: {str(e)}")
+        return [], ""
 
 
 def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation"):
