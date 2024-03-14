@@ -38,6 +38,17 @@ def get_links(page_url, start_page, finish_page):
         from urllib.parse import urljoin
         all_links = [urljoin(page_url, a['href']) for a in soup.find_all('a', href=True) if '#' not in a['href']]
         links = [link for link in all_links if re.match(r'^https://en\.wikipedia\.org/wiki/[^:]*$', link) and '#' not in link]
+        # Define your keywords based on the start and finish pages
+        start_keywords = start_page.split('/')[-1].split('_')
+        finish_keywords = finish_page.split('/')[-1].split('_')
+        keywords = start_keywords + finish_keywords
+        print(keywords)
+        # Assign a score to each link based on the number of keywords it contains
+        scored_links = [(link, sum(keyword in link for keyword in keywords)) for link in links]
+        # Sort the links based on their scores in descending order
+        scored_links.sort(key=lambda x: x[1], reverse=True)
+        # Get the sorted links
+        links = [link for link, score in scored_links]
         print(f"Found {len(links)} links on page: {page_url}")
         text = preprocess_text(soup.get_text())
         return tuple(links), text
