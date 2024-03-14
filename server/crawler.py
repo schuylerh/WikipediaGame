@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import re
 from collections import deque
 import heapq
+from collections import Counter
 
 TIMEOUT = 999999  # time limit in seconds for the search
 stop_search = False  # control variable for stopping the search
@@ -45,21 +46,24 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
             vertex, path, depth = queue.popleft()
             links, text = link_dict.get(vertex, get_links(vertex))  # Get the links and the text of the page
             link_dict[vertex] = (links, text)  # Store the links and the text of the page
-            for next in set(links) - discovered:
-                if next == finish_page:
-                    log = f"Found finish page: {next}"
-                    print(log)
-                    logs.append(log)
-                    logs.append(f"Search took {elapsed_time} seconds.")
-                    print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
-                    logs.append(f"Discovered pages: {len(discovered)}")
-                    return path + [next], logs, elapsed_time, len(discovered) # return with success
-                else:
-                    log = f"Adding link to queue: {next} (depth {depth})"
-                    print(log)
-                    logs.append(log)
-                    discovered.add(next)
-                    queue.append((next, path + [next], depth + 1))
+            links_text = [(link, link_dict.get(link, get_links(link))[1]) for link in links]
+            links_text.sort(key=lambda x: common_words_heuristic(text, x[1]), reverse=True)
+            for next, next_text in links_text:
+                if next not in discovered:
+                    if next == finish_page:
+                        log = f"Found finish page: {next}"
+                        print(log)
+                        logs.append(log)
+                        logs.append(f"Search took {elapsed_time} seconds.")
+                        print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
+                        logs.append(f"Discovered pages: {len(discovered)}")
+                        return path + [next], logs, elapsed_time, len(discovered) # return with success
+                    else:
+                        log = f"Adding link to queue: {next} (depth {depth})"
+                        print(log)
+                        logs.append(log)
+                        discovered.add(next)
+                        queue.append((next, path + [next], depth + 1))
             elapsed_time = time.time() - start_time
         logs.append(f"Search took {elapsed_time} seconds.")
         print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
@@ -74,6 +78,12 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
         logs.append(f"Error occurred: {str(e)}")
         print(f"Error occurred: {str(e)}")
         return [], logs, elapsed_time, len(discovered)  # return with error message
+def common_words_heuristic(text1, text2):
+    "compute the number of common words between two texts"
+    words1 = set(text1.lower().split())
+    words2 = set(text2.lower().split())
+    return len(words1 & words2)
+
 class TimeoutErrorWithLogs(Exception):
     def __init__(self, message, logs, time, discovered):
         super().__init__(message)
