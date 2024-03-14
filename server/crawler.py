@@ -5,6 +5,7 @@ import re
 from gensim.models import Word2Vec
 import numpy as np
 from collections import deque
+import gensim
 
 TIMEOUT = 999999  # time limit in seconds for the search
 stop_search = False  # control variable for stopping the search
