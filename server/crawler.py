@@ -64,7 +64,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
         queue.append((start_page, [start_page], 0))
         while queue and elapsed_time < TIMEOUT and not stop_search:
             vertex, path, depth = queue.popleft()
-            links = get_links(vertex)
+            links, text = get_links(vertex)
             for next in links:
                 if next not in discovered:
                     if next == finish_page:
