@@ -44,11 +44,8 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
         queue.append((start_page, [start_page], 0))
         while queue and elapsed_time < TIMEOUT and not stop_search:
             vertex, path, depth = queue.popleft()
-            links, text = link_dict.get(vertex, get_links(vertex))  # Get the links and the text of the page
-            link_dict[vertex] = (links, text)  # Store the links and the text of the page
-            links_text = [(link, link_dict.get(link, get_links(link))[1]) for link in links]
-            links_text.sort(key=lambda x: common_words_heuristic(text, x[1]), reverse=True)
-            for next, next_text in links_text:
+            links = get_links(vertex)
+            for next in links:
                 if next not in discovered:
                     if next == finish_page:
                         log = f"Found finish page: {next}"
@@ -78,11 +75,6 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
         logs.append(f"Error occurred: {str(e)}")
         print(f"Error occurred: {str(e)}")
         return [], logs, elapsed_time, len(discovered)  # return with error message
-def common_words_heuristic(text1, text2):
-    "compute the number of common words between two texts"
-    words1 = set(text1.lower().split())
-    words2 = set(text2.lower().split())
-    return len(words1 & words2)
 
 class TimeoutErrorWithLogs(Exception):
     def __init__(self, message, logs, time, discovered):
