@@ -44,7 +44,7 @@ def precompute_heuristic(start_page, finish_page, model):
         heuristic_dict[link] = calculate_similarity(link, finish_page, model)
     return heuristic_dict
 
-def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation", model):
+def find_path(start_page, model, finish_page="https://en.wikipedia.org/wiki/Cultivation"):
     heuristic_dict = precompute_heuristic(start_page, finish_page, model)
     global stop_search
     stop_search = False
