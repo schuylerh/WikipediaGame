@@ -1,7 +1,5 @@
 # Schuyler Huang
 # Project 3: Wikipedia Game Improvement Proposal
-## Overview
-Currently, WikipediaGame runs on a simple Breath First Search that could use a wide range of improvements. 
 ## Proposal to Improve WikipediaGame
 The current BFS is one without any heuristics nor word embeddings. I propose to add heuristics to the BFS in order to speed up the process even though it may miss the shortest path. The heuristic I am thinking of is associating links with scores based on how close they are related to the given keywords. The keywords would be from the names of the wikipedia pages at this moment but there could be better ways of coming up with keywords. 
 
