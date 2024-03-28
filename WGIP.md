@@ -1,7 +1,7 @@
 # Schuyler Huang
 # Project 3: Wikipedia Game Improvement Proposal
-# Benchmark
-A benchmark would be required and how it is comparable to the original BFS. A simple benchmark I propose is to reduce the search times of at least five different paths by 50%.
+## Overview
+Currently, WikipediaGame runs on a simple Breath First Search that could use a wide range of improvements. 
 ## Proposal to Improve WikipediaGame
 The current BFS is one without any heuristics nor word embeddings. I propose to add heuristics to the BFS in order to speed up the process even though it may miss the shortest path. The heuristic I am thinking of is associating links with scores based on how close they are related to the given keywords. The keywords would be from the names of the wikipedia pages at this moment but there could be better ways of coming up with keywords. 
 
@@ -29,3 +29,22 @@ Function get_links(page_url, start_page, finish_page):
 
     Return links
 ```
+## Progress
+I've implemented the heuristic described above, a heuristic that prioritizes links based on the number of keywords they contain. The keywords are derived from the start and finish pages. A score is assigned to each link based on how many times the keywords appear on the page. The implementation of this heuristic has brought a significant reduction in search time for certain paths.
+
+Here are some examples: (The time limit was set to 30s)
+
+Costume -> Prison: 30s to 3s
+
+Microsoft -> Greek Language: 30s to 8s
+
+## Milestones
+### Milestone 1
+Implement category matching, where categories of the start and finish pages are also part of the heuristic. Higher scores are given to pages that are the same category as the finish page.
+**Deadline**: April 4, 2024
+### Milestone 2
+Find an improvement, a more sophiscated approach of obtaining relevant keywords rather than just taking them from the title page. 
+**Deadline**: April 11, 2024
+### Milestone 3
+Error handling such as exceptions and testing of the system to ensure that the prototype works as intended.
+**Deadline**: April 18, 2024
