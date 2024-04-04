@@ -44,7 +44,7 @@ def get_links(page_url, start_page, finish_page, category_dict):
         keywords = start_keywords + finish_keywords
         print(keywords)
         # Assign a score to each link based on the number of keywords it contains
-        scored_links = [(link, sum(keyword in link for keyword in keywords) + 2*(link in category_dict[finish_page])) for link in links]
+        scored_links = [(link, sum(keyword in link for keyword in keywords) + 5*(link in category_dict[finish_page])) for link in links]
         # Sort the links based on their scores in descending order
         scored_links.sort(key=lambda x: x[1], reverse=True)
         # Get the sorted links
