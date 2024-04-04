@@ -28,6 +28,7 @@ Function get_links(page_url, start_page, finish_page):
     Return links
 ```
 ## Progress
+### March 27
 I've implemented the heuristic described above, a heuristic that prioritizes links based on the number of keywords they contain. The keywords are derived from the start and finish pages. A score is assigned to each link based on how many times the keywords appear on the page. The implementation of this heuristic has brought a significant reduction in search time for certain paths.
 
 Here are some examples: (The time limit was set to 30s)
@@ -35,6 +36,14 @@ Here are some examples: (The time limit was set to 30s)
 Costume -> Prison: 30s to 3s
 
 Microsoft -> Greek Language: 30s to 8s
+
+### April 3
+I've implemented Milestone 1 and included category matching into the keyword heuristic. get_links is called with four parameters: page_url, start_page, finish_page, and category_dict. The content is parsed. The links that contain Category: are extracted. The function assigns a score based on the number of keywords it contains. The score is incremented by 1 if the link is in the category_dict for the finish_page.
+
+Costume -> Prison: 1.68s
+
+Microsoft -> Greek Language: Ranges from 8-16s
+
 
 ## Milestones
 ### Milestone 1
