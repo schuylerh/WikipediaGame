@@ -44,28 +44,32 @@ def get_links(page_url, start_page, finish_page):
         keywords = start_keywords + finish_keywords
         print(keywords)
         # Assign a score to each link based on the number of keywords it contains
-        scored_links = [(link, sum(keyword in link for keyword in keywords)) for link in links]
+        scored_links = [(link, sum(keyword in link for keyword in keywords) + (link in category_dict[finish_page])) for link in links]
         # Sort the links based on their scores in descending order
         scored_links.sort(key=lambda x: x[1], reverse=True)
         # Get the sorted links
         links = [link for link, score in scored_links]
         print(f"Found {len(links)} links on page: {page_url}")
         text = preprocess_text(soup.get_text())
-        return tuple(links), text
+        categories = [link for link in all_links if 'Category:' in link]
+        return tuple(links), text, categories
     except Exception as e:
         print(f"Error occurred while fetching links from {page_url}: {str(e)}")
-        return tuple([]), ""
+        return tuple([]), "", []
 
 
 def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation"):
     global stop_search
     stop_search = False
     queue = deque()
+    start_links, start_text, start_categories = get_links(start_page, start_page, finish_page)
+    finish_links, finish_text, finish_categories = get_links(finish_page, start_page, finish_page)
     queue.append((start_page, [start_page], 0))
     discovered = set()
     logs = []
     link_dict = {}  # Add this line
     similarity_dict = {}  # Add this line
+    category_dict = {start_page: start_categories, finish_page: finish_categories}
 
     try:
         # A* search
@@ -75,7 +79,8 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
         queue.append((start_page, [start_page], 0))
         while queue and elapsed_time < TIMEOUT and not stop_search:
             vertex, path, depth = queue.popleft()
-            links, text = get_links(vertex, start_page, finish_page)
+            links, text, categories = get_links(vertex, start_page, finish_page)
+            category_dict[vertex] = categories
             for next in links:
                 if next not in discovered:
                     if next == finish_page:
