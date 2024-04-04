@@ -26,7 +26,7 @@ def preprocess_text(text):
     words = [word for word in words if word not in stop_words]
     return ' '.join(words)
 
-def get_links(page_url, start_page, finish_page):
+def get_links(page_url, start_page, finish_page, category_dict):
     if not page_url or not page_url.startswith('http'):
         print(f"Invalid or empty URL: {page_url}")
         return tuple([]), ""
@@ -62,8 +62,8 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
     global stop_search
     stop_search = False
     queue = deque()
-    start_links, start_text, start_categories = get_links(start_page, start_page, finish_page)
-    finish_links, finish_text, finish_categories = get_links(finish_page, start_page, finish_page)
+    start_links, start_text, start_categories = get_links(start_page, start_page, finish_page, category_dict)
+    finish_links, finish_text, finish_categories = get_links(finish_page, start_page, finish_page, category_dict)
     queue.append((start_page, [start_page], 0))
     discovered = set()
     logs = []
@@ -79,7 +79,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
         queue.append((start_page, [start_page], 0))
         while queue and elapsed_time < TIMEOUT and not stop_search:
             vertex, path, depth = queue.popleft()
-            links, text, categories = get_links(vertex, start_page, finish_page)
+            links, text, categories = get_links(vertex, start_page, finish_page, category_dict)
             category_dict[vertex] = categories
             for next in links:
                 if next not in discovered:
