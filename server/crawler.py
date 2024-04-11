@@ -76,24 +76,24 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                         links, text, categories = future.result()
                 except Exception as exc:
                     print(f"{url} generated an exception: {exc}")
-                    else:
-                        category_dict[vertex] = categories
-                        for next in links:
-                            if next not in discovered:
-                                if next == finish_page:
-                                    log = f"Found finish page: {next}"
-                                    print(log)
-                                    logs.append(log)
-                                    logs.append(f"Search took {elapsed_time} seconds.")
-                                    print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
-                                    logs.append(f"Discovered pages: {len(discovered)}")
-                                    return path + [next], logs, elapsed_time, len(discovered) # return with success
-                                else:
-                                    log = f"Adding link to queue: {next} (depth {depth})"
-                                    # print(log)
-                                    logs.append(log)
-                                    discovered.add(next)
-                                    queue.append((next, path + [next], depth + 1))
+                else:
+                    category_dict[vertex] = categories
+                    for next in links:
+                        if next not in discovered:
+                            if next == finish_page:
+                                log = f"Found finish page: {next}"
+                                print(log)
+                                logs.append(log)
+                                logs.append(f"Search took {elapsed_time} seconds.")
+                                print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
+                                logs.append(f"Discovered pages: {len(discovered)}")
+                                return path + [next], logs, elapsed_time, len(discovered) # return with success
+                            else:
+                                log = f"Adding link to queue: {next} (depth {depth})"
+                                # print(log)
+                                logs.append(log)
+                                discovered.add(next)
+                                queue.append((next, path + [next], depth + 1))
             elapsed_time = time.time() - start_time
         logs.append(f"Search took {elapsed_time} seconds.")
         print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
