@@ -78,8 +78,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
     try:
         # Bidirectional search
         start_time = time.time()
-        elapsed_time = time.time() - start_time
-        while queue_start and queue_finish and elapsed_time < TIMEOUT and not stop_search:
+        while queue_start and queue_finish and not stop_search:
             vertex_start, path_start, depth_start = queue_start.popleft()
             vertex_finish, path_finish, depth_finish = queue_finish.popleft()
             links_start, text_start, categories_start = get_links(vertex_start, start_page, finish_page, category_dict)
@@ -118,7 +117,8 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                         logs.append(log)
                         discovered_finish.add(next_finish)
                         queue_finish.append((next_finish, path_finish + [next_finish], depth_finish + 1))
-            elapsed_time = time.time() - start_time
+            if queue_start and queue_finish and not stop_search:
+                elapsed_time = time.time() - start_time
         logs.append(f"Search took {elapsed_time} seconds.")
         print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
         logs.append(f"Discovered pages: {len(discovered_start) + len(discovered_finish)}")
