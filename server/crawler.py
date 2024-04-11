@@ -89,7 +89,13 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
             _, (vertex_start, path_start, depth_start) = heapq.heappop(queue_start)
             _, (vertex_finish, path_finish, depth_finish) = heapq.heappop(queue_finish)
             links_start, text_start, categories_start = get_links(vertex_start, start_page, finish_page, category_dict, keywords)
+            if not links_start:
+                print(f"Error occurred while fetching links from {vertex_start}")
+                continue
             links_finish, text_finish, categories_finish = get_links(vertex_finish, start_page, finish_page, category_dict, keywords)
+            if not links_finish:
+                print(f"Error occurred while fetching links from {vertex_finish}")
+                continue
             category_dict[vertex_start] = categories_start
             category_dict[vertex_finish] = categories_finish
             for next_start in links_start:
