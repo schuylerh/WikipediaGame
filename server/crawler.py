@@ -65,12 +65,12 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
     global stop_search
     stop_search = False
     start_queue = deque()
-    start_queue.append((start_page, [start_page], 0))
-    start_discovered = set()
+    start_queue.append(start_page)
+    start_discovered = {start_page: [start_page]}
 
     finish_queue = deque()
-    finish_queue.append((finish_page, [finish_page], 0))
-    finish_discovered = set()
+    finish_queue.append(finish_page)
+    finish_discovered = {finish_page: [finish_page]}
 
     logs = []
     link_dict = {}  # Add this line
