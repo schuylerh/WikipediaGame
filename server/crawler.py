@@ -87,7 +87,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
             category_dict[vertex_start] = categories_start
             category_dict[vertex_finish] = categories_finish
             for next_start in links_start:
-                if next_start not in discovered_start:
+                if next_start not in discovered_start and next_start != "https://en.wikipedia.org/wiki/Main_Page":
                     if next_start in discovered_finish:
                         log = f"Found path: {next_start}"
                         print(log)
@@ -103,7 +103,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                         discovered_start.add(next_start)
                         queue_start.append((next_start, path_start + [next_start], depth_start + 1))
             for next_finish in links_finish:
-                if next_finish not in discovered_finish:
+                if next_finish not in discovered_finish and next_finish != "https://en.wikipedia.org/wiki/Main_Page":
                     if next_finish in discovered_start:
                         log = f"Found path: {next_finish}"
                         print(log)
