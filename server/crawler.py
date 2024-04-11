@@ -118,10 +118,9 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                             path = []
                             current = next_start
                             while current is not None:
-                                path.append(current)
+                                path.insert(0, current)
                                 current = discovered_start[current]
-                            path = path[::-1]
-                            current = next_finish
+                            current = discovered_finish[next_finish]
                             while current is not None:
                                 path.append(current)
                                 current = discovered_finish[current]
