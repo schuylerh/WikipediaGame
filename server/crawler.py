@@ -12,6 +12,7 @@ nltk.download('stopwords')
 
 TIMEOUT = 999999  # time limit in seconds for the search
 stop_search = False  # control variable for stopping the search
+excluded_urls = ["https://en.wikipedia.org/wiki/ISBN_(identifier)", "https://en.wikipedia.org/wiki/ISSN_(identifier)"]  # URLs to exclude from the search
 
 def stop_searching():
     global stop_search
@@ -87,7 +88,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
             category_dict[vertex_start] = categories_start
             category_dict[vertex_finish] = categories_finish
             for next_start in links_start:
-                if next_start not in discovered_start and next_start != "https://en.wikipedia.org/wiki/Main_Page":
+                if next_start not in discovered_start and next_start != "https://en.wikipedia.org/wiki/Main_Page" and next_start not in excluded_urls:
                     if next_start in discovered_finish:
                         log = f"Found path from {start_page} to {finish_page}: {next_start}"
                         print(log)
@@ -104,7 +105,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                         discovered_start.add(next_start)
                         queue_start.append((next_start, path_start + [next_start], depth_start + 1))
             for next_finish in links_finish:
-                if next_finish not in discovered_finish and next_finish != "https://en.wikipedia.org/wiki/Main_Page":
+                if next_finish not in discovered_finish and next_finish != "https://en.wikipedia.org/wiki/Main_Page" and next_finish not in excluded_urls:
                     if next_finish in discovered_start:
                         log = f"Found path from {start_page} to {finish_page}: {next_finish}"
                         print(log)
