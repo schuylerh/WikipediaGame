@@ -75,9 +75,10 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
     logs = []
     link_dict = {}  # Add this line
     similarity_dict = {}  # Add this line
+    category_dict = {}
     start_links, start_text, start_categories = get_links(start_page, start_page, finish_page, category_dict)
     finish_links, finish_text, finish_categories = get_links(finish_page, start_page, finish_page, category_dict)
-    category_dict = {start_page: start_categories, finish_page: finish_categories}
+    category_dict.update({start_page: start_categories, finish_page: finish_categories})
 
     try:
         # A* search
