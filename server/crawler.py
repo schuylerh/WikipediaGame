@@ -1,4 +1,3 @@
-import logging
 import time
 import requests
 from bs4 import BeautifulSoup
@@ -29,12 +28,12 @@ def preprocess_text(text):
 
 def get_links(page_url, start_page, finish_page, category_dict):
     if not page_url or not page_url.startswith('http'):
-        logging.warning(f"Invalid or empty URL: {page_url}")
+        print(f"Invalid or empty URL: {page_url}")
         return tuple([]), ""
     try:
-        logging.info(f"Fetching page: {page_url}")
+        print(f"Fetching page: {page_url}")
         response = requests.get(page_url)
-        logging.info(f"Finished fetching page: {page_url}")
+        print(f"Finished fetching page: {page_url}")
         soup = BeautifulSoup(response.text, 'html.parser')
         from urllib.parse import urljoin
         all_links = [urljoin(page_url, a['href']) for a in soup.find_all('a', href=True) if '#' not in a['href']]
@@ -43,19 +42,19 @@ def get_links(page_url, start_page, finish_page, category_dict):
         start_keywords = start_page.split('/')[-1].split('_')
         finish_keywords = finish_page.split('/')[-1].split('_')
         keywords = start_keywords + finish_keywords
-        logging.debug(keywords)
+        print(keywords)
         # Assign a score to each link based on the number of keywords it contains
         scored_links = [(link, sum(keyword in link for keyword in keywords) + (link in category_dict[finish_page])) for link in links]
         # Sort the links based on their scores in descending order
         scored_links.sort(key=lambda x: x[1], reverse=True)
         # Get the sorted links
         links = [link for link, score in scored_links]
-        logging.info(f"Found {len(links)} links on page: {page_url}")
+        print(f"Found {len(links)} links on page: {page_url}")
         text = preprocess_text(soup.get_text())
         categories = [link for link in all_links if 'Category:' in link]
         return tuple(links), text, categories
     except Exception as e:
-        logging.error(f"Error occurred while fetching links from {page_url}: {str(e)}")
+        print(f"Error occurred while fetching links from {page_url}: {str(e)}")
         return tuple([]), "", []
 
 
@@ -87,7 +86,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                 if next not in discovered:
                     if next == finish_page:
                         log = f"Found finish page: {next}"
-                        logging.info(log)
+                        print(log)
                         logs.append(log)
                         logs.append(f"Search took {elapsed_time} seconds.")
                         print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
