@@ -13,6 +13,15 @@ nltk.download('stopwords')
 TIMEOUT = 999999  # time limit in seconds for the search
 stop_search = False  # control variable for stopping the search
 
+# List of most cited pages on Wikipedia
+# Replace this list with the actual most cited pages
+MOST_CITED_PAGES = [
+    "https://en.wikipedia.org/wiki/Page1",
+    "https://en.wikipedia.org/wiki/Page2",
+    "https://en.wikipedia.org/wiki/Page3",
+    # ...
+]
+
 def stop_searching():
     global stop_search
     stop_search = True
@@ -45,8 +54,8 @@ def get_links(page_url, start_page, finish_page, category_dict):
         print(keywords)
         # Assign a score to each link based on the number of keywords it contains
         scored_links = [(link, sum(keyword in link for keyword in keywords) + (link in category_dict[finish_page])) for link in links]
-        # Sort the links based on their scores in descending order
-        scored_links.sort(key=lambda x: x[1], reverse=True)
+        # Prioritize most cited pages
+        scored_links.sort(key=lambda x: (x[1], x[0] in MOST_CITED_PAGES), reverse=True)
         # Get the sorted links
         links = [link for link, score in scored_links]
         print(f"Found {len(links)} links on page: {page_url}")
