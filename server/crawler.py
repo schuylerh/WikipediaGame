@@ -10,7 +10,7 @@ import nltk
 from nltk.corpus import stopwords
 nltk.download('stopwords')
 
-TIMEOUT = 999999  # time limit in seconds for the search
+TIMEOUT = 9999999  # time limit in seconds for the search
 stop_search = False  # control variable for stopping the search
 excluded_urls = ["https://en.wikipedia.org/wiki/ISBN_(identifier)", "https://en.wikipedia.org/wiki/ISSN_(identifier)"]  # URLs to exclude from the search
 
