@@ -76,8 +76,8 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
     link_dict = {}  # Add this line
     similarity_dict = {}  # Add this line
     category_dict = {}
-    start_links, start_text = get_links(start_page, start_page, finish_page, category_dict)
-    finish_links, finish_text = get_links(finish_page, start_page, finish_page, category_dict)
+    start_links, start_text, start_categories = get_links(start_page, start_page, finish_page, category_dict)
+    finish_links, finish_text, finish_categories = get_links(finish_page, start_page, finish_page, category_dict)
     category_dict.update({start_page: start_categories, finish_page: finish_categories})
 
     try:
@@ -91,8 +91,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
             start_links, start_text = get_links(start_vertex, start_page, finish_page, category_dict)
             finish_links, finish_text = get_links(finish_vertex, start_page, finish_page, category_dict)
 
-            category_dict[start_vertex] = start_categories
-            category_dict[finish_vertex] = finish_categories
+            category_dict.update({start_page: start_categories, finish_page: finish_categories})
 
             for next in start_links:
                 if next not in start_discovered:
