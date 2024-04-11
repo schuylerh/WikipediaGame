@@ -52,6 +52,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
     category_dict = {}
     start_links, start_text, start_categories = get_links(start_page)
     finish_links, finish_text, finish_categories = get_links(finish_page)
+    links = start_links
     queue.append((start_page, [start_page], 0))
     discovered = set()
     logs = []
@@ -69,6 +70,10 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
             vertex, path, depth = queue.popleft()
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 future_to_url = {executor.submit(get_links, url): url for url in links}
+                for future in concurrent.futures.as_completed(future_to_url):
+                    url = future_to_url[future]
+                    try:
+                        links, text, categories = future.result()
                 for future in concurrent.futures.as_completed(future_to_url):
                     url = future_to_url[future]
                     try:
