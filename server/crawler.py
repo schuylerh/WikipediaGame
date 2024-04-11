@@ -151,3 +151,6 @@ class TimeoutErrorWithLogs(Exception):
         self.logs = logs
         self.time = time
         self.discovered = discovered
+def is_valid_page(page_url):
+    "check if a page URL is valid"
+    return page_url and page_url.startswith('http')
