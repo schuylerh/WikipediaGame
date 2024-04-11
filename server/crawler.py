@@ -107,26 +107,26 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                     if is_valid_page(next_start) and depth_start <= 20:
                         score = sum(keyword in next_start for keyword in keywords) + (next_start in category_dict[finish_page])
                         heapq.heappush(queue_start, (-score, (next_start, path_start + [next_start], depth_start + 1)))
-                            # path_start.append(next_start)
-                        log = f"Found path: {next_start}"
-                        print(log)
-                        logs.append(log)
-                        elapsed_time = time.time() - start_time
-                        logs.append(f"Search took {elapsed_time} seconds.")
-                        print(f"Search took {elapsed_time} seconds.")
-                        logs.append(f"Discovered pages: {len(discovered_start) + len(discovered_finish)}")
-                        path = []
-                        current = next_start
-                        while current is not None:
-                            path.append(current)
-                            current = discovered_start[current]
-                        path = path[::-1]
-                        current = next_finish
-                        while current is not None:
-                            path.append(current)
-                            current = discovered_finish[current]
-                        print(f"Path from start to finish: {path}")
-                        return path, logs, elapsed_time, len(discovered_start) + len(discovered_finish) # return with success
+                        if next_start in discovered_finish:
+                            log = f"Found path: {next_start}"
+                            print(log)
+                            logs.append(log)
+                            elapsed_time = time.time() - start_time
+                            logs.append(f"Search took {elapsed_time} seconds.")
+                            print(f"Search took {elapsed_time} seconds.")
+                            logs.append(f"Discovered pages: {len(discovered_start) + len(discovered_finish)}")
+                            path = []
+                            current = next_start
+                            while current is not None:
+                                path.append(current)
+                                current = discovered_start[current]
+                            path = path[::-1]
+                            current = next_finish
+                            while current is not None:
+                                path.append(current)
+                                current = discovered_finish[current]
+                            print(f"Path from start to finish: {path}")
+                            return path, logs, elapsed_time, len(discovered_start) + len(discovered_finish) # return with success
             for next_finish in links_finish:
                 if next_finish not in discovered_finish and next_finish != "https://en.wikipedia.org/wiki/Main_Page":
                     log = f"Adding link to finish queue: {next_finish} (depth {depth_finish})"
@@ -136,26 +136,26 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                     if is_valid_page(next_finish) and depth_finish <= 20:
                         score = sum(keyword in next_finish for keyword in keywords) + (next_finish in category_dict[start_page])
                         heapq.heappush(queue_finish, (-score, (next_finish, path_finish + [next_finish], depth_finish + 1)))
-                            # path_finish.append(next_finish)
-                        log = f"Found path: {next_finish}"
-                        print(log)
-                        logs.append(log)
-                        elapsed_time = time.time() - start_time
-                        logs.append(f"Search took {elapsed_time} seconds.")
-                        print(f"Search took {elapsed_time} seconds.")
-                        logs.append(f"Discovered pages: {len(discovered_start) + len(discovered_finish)}")
-                        path = []
-                        current = next_start
-                        while current is not None:
-                            path.append(current)
-                            current = discovered_start[current]
-                        path = path[::-1]
-                        current = next_finish
-                        while current is not None:
-                            path.append(current)
-                            current = discovered_finish[current]
-                        print(f"Path from start to finish: {path}")
-                        return path, logs, elapsed_time, len(discovered_start) + len(discovered_finish) # return with success
+                        if next_finish in discovered_start:
+                            log = f"Found path: {next_finish}"
+                            print(log)
+                            logs.append(log)
+                            elapsed_time = time.time() - start_time
+                            logs.append(f"Search took {elapsed_time} seconds.")
+                            print(f"Search took {elapsed_time} seconds.")
+                            logs.append(f"Discovered pages: {len(discovered_start) + len(discovered_finish)}")
+                            path = []
+                            current = next_start
+                            while current is not None:
+                                path.append(current)
+                                current = discovered_start[current]
+                            path = path[::-1]
+                            current = next_finish
+                            while current is not None:
+                                path.append(current)
+                                current = discovered_finish[current]
+                            print(f"Path from start to finish: {path}")
+                            return path, logs, elapsed_time, len(discovered_start) + len(discovered_finish) # return with success
             if queue_start and queue_finish and not stop_search:
                 elapsed_time = time.time() - start_time
         elapsed_time = time.time() - start_time
