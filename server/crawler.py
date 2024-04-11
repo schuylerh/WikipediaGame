@@ -99,7 +99,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                         logs.append(f"Discovered pages: {len(discovered_start) + len(discovered_finish)}")
                         return path_start + path_finish[::-1], logs, elapsed_time, len(discovered_start) + len(discovered_finish) # return with success
                     else:
-                        log = f"Adding link to start queue: {next_start} (depth {depth_start}), queue: {queue_start}"
+                        log = f"Adding link to start queue: {next_start} (depth {depth_start})"
                         print(log)
                         logs.append(log)
                         discovered_start.add(next_start)
@@ -116,7 +116,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                         logs.append(f"Discovered pages: {len(discovered_start) + len(discovered_finish)}")
                         return path_start + path_finish[::-1], logs, elapsed_time, len(discovered_start) + len(discovered_finish) # return with success
                     else:
-                        log = f"Adding link to finish queue: {next_finish} (depth {depth_finish}), queue: {queue_finish}"
+                        log = f"Adding link to finish queue: {next_finish} (depth {depth_finish})"
                         print(log)
                         logs.append(log)
                         discovered_finish.add(next_finish)
