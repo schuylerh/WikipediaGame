@@ -92,8 +92,9 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                         log = f"Found path: {next_start}"
                         print(log)
                         logs.append(log)
+                        elapsed_time = time.time() - start_time
                         logs.append(f"Search took {elapsed_time} seconds.")
-                        print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
+                        print(f"Search took {elapsed_time} seconds.")
                         logs.append(f"Discovered pages: {len(discovered_start) + len(discovered_finish)}")
                         return path_start + path_finish[::-1], logs, elapsed_time, len(discovered_start) + len(discovered_finish) # return with success
                     else:
@@ -108,8 +109,9 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                         log = f"Found path: {next_finish}"
                         print(log)
                         logs.append(log)
+                        elapsed_time = time.time() - start_time
                         logs.append(f"Search took {elapsed_time} seconds.")
-                        print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
+                        print(f"Search took {elapsed_time} seconds.")
                         logs.append(f"Discovered pages: {len(discovered_start) + len(discovered_finish)}")
                         return path_start + path_finish[::-1], logs, elapsed_time, len(discovered_start) + len(discovered_finish) # return with success
                     else:
@@ -120,8 +122,9 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                         queue_finish.append((next_finish, path_finish + [next_finish], depth_finish + 1))
             if queue_start and queue_finish and not stop_search:
                 elapsed_time = time.time() - start_time
+        elapsed_time = time.time() - start_time
         logs.append(f"Search took {elapsed_time} seconds.")
-        print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
+        print(f"Search took {elapsed_time} seconds.")
         logs.append(f"Discovered pages: {len(discovered_start) + len(discovered_finish)}")
         if stop_search:
             logs.append("Search was stopped by user.")
