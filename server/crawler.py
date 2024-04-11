@@ -84,6 +84,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
         # Bidirectional search
         start_time = time.time()
         elapsed_time = 0
+        next_finish = None
         while queue_start and queue_finish and not stop_search:
             _, (vertex_start, path_start, depth_start) = heapq.heappop(queue_start)
             _, (vertex_finish, path_finish, depth_finish) = heapq.heappop(queue_finish)
