@@ -78,6 +78,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
     try:
         # Bidirectional search
         start_time = time.time()
+        elapsed_time = 0
         while queue_start and queue_finish and not stop_search:
             vertex_start, path_start, depth_start = queue_start.popleft()
             vertex_finish, path_finish, depth_finish = queue_finish.popleft()
