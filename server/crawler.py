@@ -61,57 +61,77 @@ def get_links(page_url, start_page, finish_page, category_dict):
 def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation"):
     global stop_search
     stop_search = False
-    queue = deque()
+    queue_start = deque()
+    queue_finish = deque()
     category_dict = {}
     start_links, start_text, start_categories = get_links(start_page, start_page, finish_page, category_dict)
     finish_links, finish_text, finish_categories = get_links(finish_page, start_page, finish_page, category_dict)
-    queue.append((start_page, [start_page], 0))
-    discovered = set()
+    queue_start.append((start_page, [start_page], 0))
+    queue_finish.append((finish_page, [finish_page], 0))
+    discovered_start = set()
+    discovered_finish = set()
     logs = []
     link_dict = {}  # Add this line
     similarity_dict = {}  # Add this line
     category_dict = {start_page: start_categories, finish_page: finish_categories}
 
     try:
-        # A* search
+        # Bidirectional search
         start_time = time.time()
         elapsed_time = time.time() - start_time
-        queue = deque()
-        queue.append((start_page, [start_page], 0))
-        while queue and elapsed_time < TIMEOUT and not stop_search:
-            vertex, path, depth = queue.popleft()
-            links, text, categories = get_links(vertex, start_page, finish_page, category_dict)
-            category_dict[vertex] = categories
-            for next in links:
-                if next not in discovered:
-                    if next == finish_page:
-                        log = f"Found finish page: {next}"
+        while queue_start and queue_finish and elapsed_time < TIMEOUT and not stop_search:
+            vertex_start, path_start, depth_start = queue_start.popleft()
+            vertex_finish, path_finish, depth_finish = queue_finish.popleft()
+            links_start, text_start, categories_start = get_links(vertex_start, start_page, finish_page, category_dict)
+            links_finish, text_finish, categories_finish = get_links(vertex_finish, start_page, finish_page, category_dict)
+            category_dict[vertex_start] = categories_start
+            category_dict[vertex_finish] = categories_finish
+            for next_start in links_start:
+                if next_start not in discovered_start:
+                    if next_start in discovered_finish:
+                        log = f"Found path: {next_start}"
                         print(log)
                         logs.append(log)
                         logs.append(f"Search took {elapsed_time} seconds.")
                         print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
-                        logs.append(f"Discovered pages: {len(discovered)}")
-                        return path + [next], logs, elapsed_time, len(discovered) # return with success
+                        logs.append(f"Discovered pages: {len(discovered_start) + len(discovered_finish)}")
+                        return path_start + path_finish[::-1], logs, elapsed_time, len(discovered_start) + len(discovered_finish) # return with success
                     else:
-                        log = f"Adding link to queue: {next} (depth {depth})"
+                        log = f"Adding link to start queue: {next_start} (depth {depth_start})"
                         print(log)
                         logs.append(log)
-                        discovered.add(next)
-                        queue.append((next, path + [next], depth + 1))
+                        discovered_start.add(next_start)
+                        queue_start.append((next_start, path_start + [next_start], depth_start + 1))
+            for next_finish in links_finish:
+                if next_finish not in discovered_finish:
+                    if next_finish in discovered_start:
+                        log = f"Found path: {next_finish}"
+                        print(log)
+                        logs.append(log)
+                        logs.append(f"Search took {elapsed_time} seconds.")
+                        print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
+                        logs.append(f"Discovered pages: {len(discovered_start) + len(discovered_finish)}")
+                        return path_start + path_finish[::-1], logs, elapsed_time, len(discovered_start) + len(discovered_finish) # return with success
+                    else:
+                        log = f"Adding link to finish queue: {next_finish} (depth {depth_finish})"
+                        print(log)
+                        logs.append(log)
+                        discovered_finish.add(next_finish)
+                        queue_finish.append((next_finish, path_finish + [next_finish], depth_finish + 1))
             elapsed_time = time.time() - start_time
         logs.append(f"Search took {elapsed_time} seconds.")
         print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
-        logs.append(f"Discovered pages: {len(discovered)}")
+        logs.append(f"Discovered pages: {len(discovered_start) + len(discovered_finish)}")
         if stop_search:
             logs.append("Search was stopped by user.")
             print("Search was stopped by user.")
-            return [], logs, elapsed_time, len(discovered)  # return with stop message
+            return [], logs, elapsed_time, len(discovered_start) + len(discovered_finish)  # return with stop message
         else:
-            raise TimeoutErrorWithLogs("Search exceeded time limit.", logs, elapsed_time, len(discovered))
+            raise TimeoutErrorWithLogs("Search exceeded time limit.", logs, elapsed_time, len(discovered_start) + len(discovered_finish))
     except Exception as e:
         logs.append(f"Error occurred: {str(e)}")
         print(f"Error occurred: {str(e)}")
-        return [], logs, elapsed_time, len(discovered)  # return with error message
+        return [], logs, elapsed_time, len(discovered_start) + len(discovered_finish)  # return with error message
 
 class TimeoutErrorWithLogs(Exception):
     def __init__(self, message, logs, time, discovered):
