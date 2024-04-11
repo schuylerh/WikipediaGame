@@ -38,20 +38,24 @@ Costume -> Prison: 30s to 3s
 Microsoft -> Greek Language: 30s to 8s
 
 ### April 3
-I've implemented Milestone 1 and included category matching into the keyword heuristic. get_links is called with four parameters: page_url, start_page, finish_page, and category_dict. The content is parsed. The links that contain Category: are extracted. The function assigns a score based on the number of keywords it contains. The score is incremented by 1 if the link is in the category_dict for the finish_page.
+I've implemented Milestone 1 and included category matching into the keyword heuristic. get_links is called with four parameters: page_url, start_page, finish_page, and category_dict. The content is parsed. The links that contain Category: are extracted. The function assigns a score based on the number of keywords it contains. The score is incremented by 1 if the link is in the category_dict for the finish_page. A heap is used, and the smallest element is popped first. The scores are stored as a negative value, going down the more occurrences of the keyword.
 
 Costume -> Prison: 1.68s
 
 Microsoft -> Greek Language: Ranges from 8-16s
 
+### April 11
+Implemented bidirectional search. One queue from the start page and one queue from the finish page until they both find a common page. When a common page is found, the parents of the finish queue are taken as path from common page to finish page. Found out that for the path to work, the wikipedia feature of "What Links Here" is required to find a path from the common page to the finish page. Might have to search for other solutions.
+
+Microsoft -> Greek Language: 0.5s
 
 ## Milestones
 ### Milestone 1
 Implement category matching, where categories of the start and finish pages are also part of the heuristic. Higher scores are given to pages that are the same category as the finish page.
 **Deadline**: April 4, 2024
 ### Milestone 2
-Find an improvement, a more sophiscated approach of obtaining relevant keywords rather than just taking them from the title page. 
-**Deadline**: April 11, 2024
+Try finding a way to speed up the search time. Ex// bidirectional search, removing references and unnecessary text, etc
+**Deadline**: April 18, 2024
 ### Milestone 3
-Error handling such as exceptions and testing of the system to ensure that the prototype works as intended.
+Find an improvement, a more sophiscated approach of obtaining relevant keywords rather than just taking them from the title page. 
 **Deadline**: April 18, 2024
