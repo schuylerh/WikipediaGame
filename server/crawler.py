@@ -88,6 +88,13 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
             category_dict[vertex_finish] = categories_finish
             for next_start in links_start:
                 if next_start not in discovered_start and next_start != "https://en.wikipedia.org/wiki/Main_Page":
+                    log = f"Adding link to start queue: {next_start} (depth {depth_start})"
+                    print(log)
+                    logs.append(log)
+                    discovered_start.add(next_start)
+                    if is_valid_page(next_start) and depth_start <= 8:
+                        queue_start.append((next_start, path_start + [next_start], depth_start + 1))
+                        path_start.append(next_start)
                     if next_start in discovered_finish:
                         log = f"Found path: {next_start}"
                         print(log)
@@ -99,16 +106,15 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                         path = path_start + path_finish[::-1]
                         print(f"Path from start to finish: {path}")
                         return path, logs, elapsed_time, len(discovered_start) + len(discovered_finish) # return with success
-                    else:
-                        log = f"Adding link to start queue: {next_start} (depth {depth_start})"
-                        print(log)
-                        logs.append(log)
-                        discovered_start.add(next_start)
-                        if is_valid_page(next_start) and depth_start <= 8:
-                            queue_start.append((next_start, path_start + [next_start], depth_start + 1))
-                            path_start.append(next_start)
             for next_finish in links_finish:
                 if next_finish not in discovered_finish and next_finish != "https://en.wikipedia.org/wiki/Main_Page":
+                    log = f"Adding link to finish queue: {next_finish} (depth {depth_finish})"
+                    print(log)
+                    logs.append(log)
+                    discovered_finish.add(next_finish)
+                    if is_valid_page(next_finish) and depth_finish <= 8:
+                        queue_finish.append((next_finish, path_finish + [next_finish], depth_finish + 1))
+                        path_finish.append(next_finish)
                     if next_finish in discovered_start:
                         log = f"Found path: {next_finish}"
                         print(log)
@@ -120,14 +126,6 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                         path = path_start + path_finish[::-1]
                         print(f"Path from start to finish: {path}")
                         return path, logs, elapsed_time, len(discovered_start) + len(discovered_finish) # return with success
-                    else:
-                        log = f"Adding link to finish queue: {next_finish} (depth {depth_finish})"
-                        print(log)
-                        logs.append(log)
-                        discovered_finish.add(next_finish)
-                        if is_valid_page(next_finish) and depth_finish <= 8:
-                            queue_finish.append((next_finish, path_finish + [next_finish], depth_finish + 1))
-                            path_finish.append(next_finish)
             if queue_start and queue_finish and not stop_search:
                 elapsed_time = time.time() - start_time
         elapsed_time = time.time() - start_time
