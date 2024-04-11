@@ -75,8 +75,8 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
     logs = []
     link_dict = {}  # Add this line
     similarity_dict = {}  # Add this line
-    start_links, start_text, start_categories, _ = get_links(start_page, start_page, finish_page, {})
-    finish_links, finish_text, finish_categories, _ = get_links(finish_page, start_page, finish_page, {})
+    start_links, start_text, start_categories = get_links(start_page, start_page, finish_page, {})
+    finish_links, finish_text, finish_categories = get_links(finish_page, start_page, finish_page, {})
     category_dict = {start_page: start_categories, finish_page: finish_categories}
 
     try:
@@ -87,8 +87,8 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
             start_vertex, start_path, start_depth = start_queue.popleft()
             finish_vertex, finish_path, finish_depth = finish_queue.popleft()
 
-            start_links, start_text, start_categories, _ = get_links(start_vertex, start_page, finish_page, category_dict)
-            finish_links, finish_text, finish_categories, _ = get_links(finish_vertex, start_page, finish_page, category_dict)
+            start_links, start_text, start_categories = get_links(start_vertex, start_page, finish_page, category_dict)
+            finish_links, finish_text, finish_categories = get_links(finish_vertex, start_page, finish_page, category_dict)
 
             category_dict[start_vertex] = start_categories
             category_dict[finish_vertex] = finish_categories
