@@ -69,13 +69,13 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
         while queue and elapsed_time < TIMEOUT and not stop_search:
             vertex, path, depth = queue.popleft()
             with concurrent.futures.ThreadPoolExecutor() as executor:
-                future_to_url = {executor.submit(get_links, url): url for url in links}
                 try:
+                    future_to_url = {executor.submit(get_links, url): url for url in links}
                     for future in concurrent.futures.as_completed(future_to_url):
                         url = future_to_url[future]
                         links, text, categories = future.result()
-                    except Exception as exc:
-                        print(f"{url} generated an exception: {exc}")
+                except Exception as exc:
+                    print(f"{url} generated an exception: {exc}")
                     else:
                         category_dict[vertex] = categories
                         for next in links:
