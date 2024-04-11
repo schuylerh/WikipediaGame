@@ -35,8 +35,11 @@ def get_links(page_url, start_page, finish_page, category_dict):
         response = requests.get(page_url)
         print(f"Finished fetching page: {page_url}")
         soup = BeautifulSoup(response.text, 'html.parser')
+        # Get the main content of the page
+        content = soup.find('div', {'id': 'mw-content-text'})
         from urllib.parse import urljoin
-        all_links = [urljoin(page_url, a['href']) for a in soup.find_all('a', href=True) if '#' not in a['href']]
+        # Only extract links from the main content
+        all_links = [urljoin(page_url, a['href']) for a in content.find_all('a', href=True) if '#' not in a['href']]
         links = [link for link in all_links if re.match(r'^https://en\.wikipedia\.org/wiki/[^:]*$', link) and '#' not in link]
         # Define your keywords based on the start and finish pages
         start_keywords = start_page.split('/')[-1].split('_')
