@@ -83,29 +83,50 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
         # A* search
         start_time = time.time()
         elapsed_time = time.time() - start_time
-        queue = deque()
-        queue.append((start_page, [start_page], 0))
-        discovered = set()
-        while queue and elapsed_time < TIMEOUT and not stop_search:
-            vertex, path, depth = queue.popleft()
-            links, text, categories = get_links(vertex, start_page, finish_page, category_dict)
-            category_dict[vertex] = categories
-            for next in links:
-                if next not in discovered:
-                    if next == finish_page:
+        while start_queue and finish_queue and elapsed_time < TIMEOUT and not stop_search:
+            start_vertex, start_path, start_depth = start_queue.popleft()
+            finish_vertex, finish_path, finish_depth = finish_queue.popleft()
+
+            start_links, start_text, start_categories = get_links(start_vertex, start_page, finish_page, category_dict)
+            finish_links, finish_text, finish_categories = get_links(finish_vertex, start_page, finish_page, category_dict)
+
+            category_dict[start_vertex] = start_categories
+            category_dict[finish_vertex] = finish_categories
+
+            for next in start_links:
+                if next not in start_discovered:
+                    if next in finish_discovered:
                         log = f"Found finish page: {next}"
                         print(log)
                         logs.append(log)
                         logs.append(f"Search took {elapsed_time} seconds.")
-                        print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
-                        logs.append(f"Discovered pages: {len(discovered)}")
-                        return path + [next], logs, elapsed_time, len(discovered) # return with success
+                        print(f"Search took {elapsed_time} seconds.")
+                        logs.append(f"Discovered pages: {len(start_discovered) + len(finish_discovered)}")
+                        return start_path + [next] + finish_path[::-1], logs, elapsed_time, len(start_discovered) + len(finish_discovered)
                     else:
-                        log = f"Adding link to queue: {next} (depth {depth})"
+                        log = f"Adding link to start queue: {next} (depth {start_depth})"
                         print(log)
                         logs.append(log)
-                        discovered.add(next)
-                        queue.append((next, path + [next], depth + 1))
+                        start_discovered.add(next)
+                        start_queue.append((next, start_path + [next], start_depth + 1))
+
+            for next in finish_links:
+                if next not in finish_discovered:
+                    if next in start_discovered:
+                        log = f"Found start page: {next}"
+                        print(log)
+                        logs.append(log)
+                        logs.append(f"Search took {elapsed_time} seconds.")
+                        print(f"Search took {elapsed_time} seconds.")
+                        logs.append(f"Discovered pages: {len(start_discovered) + len(finish_discovered)}")
+                        return start_path + [next] + finish_path[::-1], logs, elapsed_time, len(start_discovered) + len(finish_discovered)
+                    else:
+                        log = f"Adding link to finish queue: {next} (depth {finish_depth})"
+                        print(log)
+                        logs.append(log)
+                        finish_discovered.add(next)
+                        finish_queue.append((next, finish_path + [next], finish_depth + 1))
+
             elapsed_time = time.time() - start_time
         logs.append(f"Search took {elapsed_time} seconds.")
         print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
