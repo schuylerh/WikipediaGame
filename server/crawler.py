@@ -102,7 +102,6 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                         heapq.heappush(queue_start, (-score, (next_start, path_start + [next_start], depth_start + 1)))
                         if next_start in discovered_finish:
                             # path_start.append(next_start)
-                    if next_start in discovered_finish:
                         log = f"Found path: {next_start}"
                         print(log)
                         logs.append(log)
@@ -134,7 +133,6 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                         heapq.heappush(queue_finish, (-score, (next_finish, path_finish + [next_finish], depth_finish + 1)))
                         if next_finish in discovered_start:
                             # path_finish.append(next_finish)
-                    if next_finish in discovered_start:
                         log = f"Found path: {next_finish}"
                         print(log)
                         logs.append(log)
