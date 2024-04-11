@@ -104,7 +104,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                     print(log)
                     logs.append(log)
                     discovered_start[next_start] = vertex_start
-                    if is_valid_page(next_start) and depth_start <= 8:
+                    if is_valid_page(next_start) and depth_start <= 20:
                         score = sum(keyword in next_start for keyword in keywords) + (next_start in category_dict[finish_page])
                         heapq.heappush(queue_start, (-score, (next_start, path_start + [next_start], depth_start + 1)))
                             # path_start.append(next_start)
@@ -133,7 +133,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                     print(log)
                     logs.append(log)
                     discovered_finish[next_finish] = vertex_finish
-                    if is_valid_page(next_finish) and depth_finish <= 8:
+                    if is_valid_page(next_finish) and depth_finish <= 20:
                         score = sum(keyword in next_finish for keyword in keywords) + (next_finish in category_dict[start_page])
                         heapq.heappush(queue_finish, (-score, (next_finish, path_finish + [next_finish], depth_finish + 1)))
                             # path_finish.append(next_finish)
