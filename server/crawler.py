@@ -109,17 +109,16 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                         logs.append(f"Search took {elapsed_time} seconds.")
                         print(f"Search took {elapsed_time} seconds.")
                         logs.append(f"Discovered pages: {len(discovered_start) + len(discovered_finish)}")
-                        path_start = []
-                        path_finish = []
-                        current = next_start
-                        while current is not None:
-                            path_start.append(current)
-                            current = discovered_start[current]
+                        path = []
                         current = next_finish
                         while current is not None:
-                            path_finish.append(current)
+                            path.append(current)
                             current = discovered_finish[current]
-                        path = path_start[::-1] + path_finish[1:]
+                        path = path[::-1]
+                        current = next_start
+                        while current is not None:
+                            path.append(current)
+                            current = discovered_start[current]
                         print(f"Path from start to finish: {path}")
                         return path, logs, elapsed_time, len(discovered_start) + len(discovered_finish) # return with success
             for next_finish in links_finish:
