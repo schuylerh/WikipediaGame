@@ -26,7 +26,7 @@ def preprocess_text(text):
     words = [word for word in words if word not in stop_words]
     return ' '.join(words)
 
-def get_links(page_url, start_page, finish_page, category_dict):
+def get_links(page_url, start_page, finish_page, category_dict, keywords):
     if not page_url or not page_url.startswith('http'):
         print(f"Invalid or empty URL: {page_url}")
         return tuple([]), ""
@@ -59,13 +59,18 @@ def get_links(page_url, start_page, finish_page, category_dict):
 
 
 def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation"):
+    # Define your keywords based on the start and finish pages
+    start_keywords = start_page.split('/')[-1].split('_')
+    finish_keywords = finish_page.split('/')[-1].split('_')
+    keywords = start_keywords + finish_keywords
+    print(keywords)
     global stop_search
     stop_search = False
     queue_start = []
     queue_finish = []
     category_dict = {}
-    start_links, start_text, start_categories = get_links(start_page, start_page, finish_page, category_dict)
-    finish_links, finish_text, finish_categories = get_links(finish_page, start_page, finish_page, category_dict)
+    start_links, start_text, start_categories = get_links(start_page, start_page, finish_page, category_dict, keywords)
+    finish_links, finish_text, finish_categories = get_links(finish_page, start_page, finish_page, category_dict, keywords)
     heapq.heappush(queue_start, (0, (start_page, [start_page], 0)))
     heapq.heappush(queue_finish, (0, (finish_page, [finish_page], 0)))
     discovered_start = set()
@@ -82,8 +87,8 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
         while queue_start and queue_finish and not stop_search:
             _, (vertex_start, path_start, depth_start) = heapq.heappop(queue_start)
             _, (vertex_finish, path_finish, depth_finish) = heapq.heappop(queue_finish)
-            links_start, text_start, categories_start = get_links(vertex_start, start_page, finish_page, category_dict)
-            links_finish, text_finish, categories_finish = get_links(vertex_finish, start_page, finish_page, category_dict)
+            links_start, text_start, categories_start = get_links(vertex_start, start_page, finish_page, category_dict, keywords)
+            links_finish, text_finish, categories_finish = get_links(vertex_finish, start_page, finish_page, category_dict, keywords)
             category_dict[vertex_start] = categories_start
             category_dict[vertex_finish] = categories_finish
             for next_start in links_start:
