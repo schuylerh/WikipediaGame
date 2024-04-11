@@ -64,16 +64,20 @@ def get_links(page_url, start_page, finish_page, category_dict):
 def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation"):
     global stop_search
     stop_search = False
-    queue = deque()
-    category_dict = {}
-    start_links, start_text, start_categories = get_links(start_page, start_page, finish_page, category_dict)
-    finish_links, finish_text, finish_categories = get_links(finish_page, start_page, finish_page, category_dict)
-    queue.append((start_page, [start_page], 0))
-    discovered = set()
+    start_queue = deque()
+    start_queue.append((start_page, [start_page], 0))
+    start_discovered = set()
+
+    finish_queue = deque()
+    finish_queue.append((finish_page, [finish_page], 0))
+    finish_discovered = set()
+
     logs = []
     link_dict = {}  # Add this line
     similarity_dict = {}  # Add this line
     category_dict = {start_page: start_categories, finish_page: finish_categories}
+    start_links, start_text, start_categories = get_links(start_page, start_page, finish_page, category_dict)
+    finish_links, finish_text, finish_categories = get_links(finish_page, start_page, finish_page, category_dict)
 
     try:
         # A* search
