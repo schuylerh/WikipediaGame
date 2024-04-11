@@ -31,9 +31,9 @@ def get_links(page_url, start_page, finish_page, category_dict):
         print(f"Invalid or empty URL: {page_url}")
         return tuple([]), ""
     try:
-        print(f"Fetching page: {page_url}")
+        # print(f"Fetching page: {page_url}")
         response = requests.get(page_url)
-        print(f"Finished fetching page: {page_url}")
+        # print(f"Finished fetching page: {page_url}")
         soup = BeautifulSoup(response.text, 'html.parser')
         from urllib.parse import urljoin
         all_links = [urljoin(page_url, a['href']) for a in soup.find_all('a', href=True) if '#' not in a['href']]
@@ -49,7 +49,7 @@ def get_links(page_url, start_page, finish_page, category_dict):
         scored_links.sort(key=lambda x: x[1], reverse=True)
         # Get the sorted links
         links = [link for link, score in scored_links]
-        print(f"Found {len(links)} links on page: {page_url}")
+        # print(f"Found {len(links)} links on page: {page_url}")
         text = preprocess_text(soup.get_text())
         categories = [link for link in all_links if 'Category:' in link]
         return tuple(links), text, categories
@@ -94,23 +94,23 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                         return path + [next], logs, elapsed_time, len(discovered) # return with success
                     else:
                         log = f"Adding link to queue: {next} (depth {depth})"
-                        print(log)
+                        # print(log)
                         logs.append(log)
                         discovered.add(next)
                         queue.append((next, path + [next], depth + 1))
             elapsed_time = time.time() - start_time
         logs.append(f"Search took {elapsed_time} seconds.")
-        logging.info(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
+        print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
         logs.append(f"Discovered pages: {len(discovered)}")
         if stop_search:
             logs.append("Search was stopped by user.")
-            logging.info("Search was stopped by user.")
+            print("Search was stopped by user.")
             return [], logs, elapsed_time, len(discovered)  # return with stop message
         else:
             raise TimeoutErrorWithLogs("Search exceeded time limit.", logs, elapsed_time, len(discovered))
     except Exception as e:
         logs.append(f"Error occurred: {str(e)}")
-        logging.error(f"Error occurred: {str(e)}")
+        print(f"Error occurred: {str(e)}")
         return [], logs, elapsed_time, len(discovered)  # return with error message
 
 class TimeoutErrorWithLogs(Exception):
@@ -119,4 +119,3 @@ class TimeoutErrorWithLogs(Exception):
         self.logs = logs
         self.time = time
         self.discovered = discovered
-
