@@ -88,8 +88,8 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
             start_vertex, start_path, start_depth = start_queue.popleft()
             finish_vertex, finish_path, finish_depth = finish_queue.popleft()
 
-            start_links, start_text, start_categories = get_links(start_vertex, start_page, finish_page, category_dict)
-            finish_links, finish_text, finish_categories = get_links(finish_vertex, start_page, finish_page, category_dict)
+            start_links, start_text = get_links(start_vertex, start_page, finish_page, category_dict)
+            finish_links, finish_text = get_links(finish_vertex, start_page, finish_page, category_dict)
 
             category_dict[start_vertex] = start_categories
             category_dict[finish_vertex] = finish_categories
