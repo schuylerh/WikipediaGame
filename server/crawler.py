@@ -130,17 +130,17 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
             elapsed_time = time.time() - start_time
         logs.append(f"Search took {elapsed_time} seconds.")
         print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
-        logs.append(f"Discovered pages: {len(discovered)}")
+        logs.append(f"Discovered pages: {len(start_discovered) + len(finish_discovered)}")
         if stop_search:
             logs.append("Search was stopped by user.")
             print("Search was stopped by user.")
-            return [], logs, elapsed_time, len(discovered)  # return with stop message
+            return [], logs, elapsed_time, len(start_discovered) + len(finish_discovered)  # return with stop message
         else:
-            raise TimeoutErrorWithLogs("Search exceeded time limit.", logs, elapsed_time, len(discovered))
+            raise TimeoutErrorWithLogs("Search exceeded time limit.", logs, elapsed_time, len(start_discovered) + len(finish_discovered))
     except Exception as e:
         logs.append(f"Error occurred: {str(e)}")
         print(f"Error occurred: {str(e)}")
-        return [], logs, elapsed_time, len(discovered)  # return with error message
+        return [], logs, elapsed_time, len(start_discovered) + len(finish_discovered)  # return with error message
 
 class TimeoutErrorWithLogs(Exception):
     def __init__(self, message, logs, time, discovered):
