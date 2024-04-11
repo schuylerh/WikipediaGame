@@ -106,6 +106,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                         discovered_start.add(next_start)
                         if is_valid_page(next_start):
                             queue_start.append((next_start, path_start + [next_start], depth_start + 1))
+                            path_start.append(next_start)
             for next_finish in links_finish:
                 if next_finish not in discovered_finish and next_finish != "https://en.wikipedia.org/wiki/Main_Page":
                     if next_finish in discovered_start:
@@ -126,6 +127,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                         discovered_finish.add(next_finish)
                         if is_valid_page(next_finish):
                             queue_finish.append((next_finish, path_finish + [next_finish], depth_finish + 1))
+                            path_finish.append(next_finish)
             if queue_start and queue_finish and not stop_search:
                 elapsed_time = time.time() - start_time
         elapsed_time = time.time() - start_time
