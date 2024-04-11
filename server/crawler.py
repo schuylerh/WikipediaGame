@@ -61,13 +61,13 @@ def get_links(page_url, start_page, finish_page, category_dict):
 def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation"):
     global stop_search
     stop_search = False
-    queue_start = deque()
-    queue_finish = deque()
+    queue_start = []
+    queue_finish = []
     category_dict = {}
     start_links, start_text, start_categories = get_links(start_page, start_page, finish_page, category_dict)
     finish_links, finish_text, finish_categories = get_links(finish_page, start_page, finish_page, category_dict)
-    queue_start.append((start_page, [start_page], 0))
-    queue_finish.append((finish_page, [finish_page], 0))
+    heapq.heappush(queue_start, (0, (start_page, [start_page], 0)))
+    heapq.heappush(queue_finish, (0, (finish_page, [finish_page], 0)))
     discovered_start = set()
     discovered_finish = set()
     logs = []
@@ -80,8 +80,8 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
         start_time = time.time()
         elapsed_time = 0
         while queue_start and queue_finish and not stop_search:
-            vertex_start, path_start, depth_start = queue_start.popleft()
-            vertex_finish, path_finish, depth_finish = queue_finish.popleft()
+            _, (vertex_start, path_start, depth_start) = heapq.heappop(queue_start)
+            _, (vertex_finish, path_finish, depth_finish) = heapq.heappop(queue_finish)
             links_start, text_start, categories_start = get_links(vertex_start, start_page, finish_page, category_dict)
             links_finish, text_finish, categories_finish = get_links(vertex_finish, start_page, finish_page, category_dict)
             category_dict[vertex_start] = categories_start
@@ -93,7 +93,8 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                     logs.append(log)
                     discovered_start.add(next_start)
                     if is_valid_page(next_start) and depth_start <= 8:
-                        queue_start.append((next_start, path_start + [next_start], depth_start + 1))
+                        score = sum(keyword in next_start for keyword in keywords) + (next_start in category_dict[finish_page])
+                        heapq.heappush(queue_start, (-score, (next_start, path_start + [next_start], depth_start + 1)))
                         path_start.append(next_start)
                     if next_start in discovered_finish:
                         log = f"Found path: {next_start}"
@@ -113,7 +114,8 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                     logs.append(log)
                     discovered_finish.add(next_finish)
                     if is_valid_page(next_finish) and depth_finish <= 8:
-                        queue_finish.append((next_finish, path_finish + [next_finish], depth_finish + 1))
+                        score = sum(keyword in next_finish for keyword in keywords) + (next_finish in category_dict[start_page])
+                        heapq.heappush(queue_finish, (-score, (next_finish, path_finish + [next_finish], depth_finish + 1)))
                         path_finish.append(next_finish)
                     if next_finish in discovered_start:
                         log = f"Found path: {next_finish}"
