@@ -89,7 +89,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
             for next_start in links_start:
                 if next_start not in discovered_start and next_start != "https://en.wikipedia.org/wiki/Main_Page":
                     if next_start in discovered_finish:
-                        log = f"Found path: {next_start}"
+                        log = f"Found path from {start_page} to {finish_page}: {next_start}"
                         print(log)
                         logs.append(log)
                         elapsed_time = time.time() - start_time
@@ -106,7 +106,7 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
             for next_finish in links_finish:
                 if next_finish not in discovered_finish and next_finish != "https://en.wikipedia.org/wiki/Main_Page":
                     if next_finish in discovered_start:
-                        log = f"Found path: {next_finish}"
+                        log = f"Found path from {start_page} to {finish_page}: {next_finish}"
                         print(log)
                         logs.append(log)
                         elapsed_time = time.time() - start_time
