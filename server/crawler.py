@@ -73,8 +73,8 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
     finish_links, finish_text, finish_categories = get_links(finish_page, start_page, finish_page, category_dict, keywords)
     heapq.heappush(queue_start, (0, (start_page, [start_page], 0)))
     heapq.heappush(queue_finish, (0, (finish_page, [finish_page], 0)))
-    discovered_start = set()
-    discovered_finish = set()
+    discovered_start = {start_page: None}
+    discovered_finish = {finish_page: None}
     logs = []
     link_dict = {}  # Add this line
     similarity_dict = {}  # Add this line
@@ -96,12 +96,12 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                     log = f"Adding link to start queue: {next_start} (depth {depth_start})"
                     print(log)
                     logs.append(log)
-                    discovered_start.add(next_start)
+                    discovered_start[next_start] = vertex_start
                     if is_valid_page(next_start) and depth_start <= 8:
                         score = sum(keyword in next_start for keyword in keywords) + (next_start in category_dict[finish_page])
                         heapq.heappush(queue_start, (-score, (next_start, path_start + [next_start], depth_start + 1)))
                         if next_start in discovered_finish:
-                            path_start.append(next_start)
+                            # path_start.append(next_start)
                     if next_start in discovered_finish:
                         log = f"Found path: {next_start}"
                         print(log)
@@ -110,7 +110,17 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                         logs.append(f"Search took {elapsed_time} seconds.")
                         print(f"Search took {elapsed_time} seconds.")
                         logs.append(f"Discovered pages: {len(discovered_start) + len(discovered_finish)}")
-                        path = path_start + path_finish[::-1]
+                        path_start = []
+                        path_finish = []
+                        current = next_start
+                        while current is not None:
+                            path_start.append(current)
+                            current = discovered_start[current]
+                        current = next_finish
+                        while current is not None:
+                            path_finish.append(current)
+                            current = discovered_finish[current]
+                        path = path_start[::-1] + path_finish[1:]
                         print(f"Path from start to finish: {path}")
                         return path, logs, elapsed_time, len(discovered_start) + len(discovered_finish) # return with success
             for next_finish in links_finish:
@@ -118,12 +128,12 @@ def find_path(start_page, finish_page="https://en.wikipedia.org/wiki/Cultivation
                     log = f"Adding link to finish queue: {next_finish} (depth {depth_finish})"
                     print(log)
                     logs.append(log)
-                    discovered_finish.add(next_finish)
+                    discovered_finish[next_finish] = vertex_finish
                     if is_valid_page(next_finish) and depth_finish <= 8:
                         score = sum(keyword in next_finish for keyword in keywords) + (next_finish in category_dict[start_page])
                         heapq.heappush(queue_finish, (-score, (next_finish, path_finish + [next_finish], depth_finish + 1)))
                         if next_finish in discovered_start:
-                            path_finish.append(next_finish)
+                            # path_finish.append(next_finish)
                     if next_finish in discovered_start:
                         log = f"Found path: {next_finish}"
                         print(log)
