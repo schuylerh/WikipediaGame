@@ -10,6 +10,9 @@ import nltk
 from nltk.corpus import stopwords
 nltk.download('stopwords')
 
+# Add a dictionary to cache the results of get_links()
+link_cache = {}
+
 TIMEOUT = 999999  # time limit in seconds for the search
 stop_search = False  # control variable for stopping the search
 
@@ -27,6 +30,10 @@ def preprocess_text(text):
     return ' '.join(words)
 
 def get_links(page_url, start_page, finish_page, category_dict, keywords):
+    # Check if the links for this page are already in the cache
+    if page_url in link_cache:
+        print(f"Using cached links for page: {page_url}")
+        return link_cache[page_url]
     if not page_url or not page_url.startswith('http'):
         print(f"Invalid or empty URL: {page_url}")
         return tuple([]), ""
@@ -52,6 +59,8 @@ def get_links(page_url, start_page, finish_page, category_dict, keywords):
         print(f"Found {len(links)} links on page: {page_url}")
         text = preprocess_text(soup.get_text())
         categories = [link for link in all_links if 'Category:' in link]
+        # Store the links in the cache before returning them
+        link_cache[page_url] = (tuple(links), text, categories)
         return tuple(links), text, categories
     except Exception as e:
         print(f"Error occurred while fetching links from {page_url}: {str(e)}")
