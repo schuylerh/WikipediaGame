@@ -28,7 +28,7 @@ Function get_links(page_url, start_page, finish_page):
     Return links
 ```
 ## Progress
-### March 27
+### April 4
 I've implemented the heuristic described above, a heuristic that prioritizes links based on the number of keywords they contain. The keywords are derived from the start and finish pages. A score is assigned to each link based on how many times the keywords appear on the page. The implementation of this heuristic has brought a significant reduction in search time for certain paths.
 
 Here are some examples: (The time limit was set to 30s)
@@ -37,25 +37,37 @@ Costume -> Prison: 30s to 3s
 
 Microsoft -> Greek Language: 30s to 8s
 
-### April 3
+### April 18
 I've implemented Milestone 1 and included category matching into the keyword heuristic. get_links is called with four parameters: page_url, start_page, finish_page, and category_dict. The content is parsed. The links that contain Category: are extracted. The function assigns a score based on the number of keywords it contains. The score is incremented by 1 if the link is in the category_dict for the finish_page. A heap is used, and the smallest element is popped first. The scores are stored as a negative value, going down the more occurrences of the keyword.
 
 Costume -> Prison: 1.68s
 
 Microsoft -> Greek Language: Ranges from 8-16s
 
-### April 11
+### April 25
 Implemented bidirectional search. One queue from the start page and one queue from the finish page until they both find a common page. When a common page is found, the parents of the finish queue are taken as path from common page to finish page. Found out that for the path to work, the wikipedia feature of "What Links Here" is required to find a path from the common page to the finish page. Might have to search for other solutions.
 
 Microsoft -> Greek Language: 0.5s
 
+### May 2, 2024
+Tried implementing a more robust version of the keyword heuristic and utilizing libraries such as word2vec for similarity. However, once implemented, the search duration shot up significantly and would not start processing until minutes later. Believe too much computational power is needed to load the word2vec library and worsened the search duration overall. 
+
+Samples: Could not load word2vec and start the search. Reverted to previous heuristic.
+
 ## Milestones
 ### Milestone 1
-Implement category matching, where categories of the start and finish pages are also part of the heuristic. Higher scores are given to pages that are the same category as the finish page.
+Implement a keyword heuristic. Pages that are closer in similarity to the finish pages are given a higher score. 
 **Deadline**: April 4, 2024
+**Status**: Done
 ### Milestone 2
-Try finding a way to speed up the search time. Ex// bidirectional search, removing references and unnecessary text, etc
+Implement category matching, where categories of the start and finish pages are also part of the heuristic. Higher scores are given to pages that are the same category as the finish page.
 **Deadline**: April 18, 2024
+**Status**: Done
 ### Milestone 3
-Find an improvement, a more sophiscated approach of obtaining relevant keywords rather than just taking them from the title page. 
-**Deadline**: April 18, 2024
+Implement a bidirectional search. Ex// bidirectional search, removing references and unnecessary text, etc
+**Deadline**: April 25, 2024
+**Status**: Done
+### Milestone 4
+Try implementing word2vec and keyword heuristic libraries instead of the current search utilizing keywords from titles
+**Deadline**: May 2, 2024
+**Status**: Done
