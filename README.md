@@ -51,14 +51,12 @@ Play the game on [`localhost:5000`](http://127.0.0.1:5000/) (this link will only
 
 ## Testing
 
-The samples I used were:
+Run the code using this script:
+```bash
+python3 server.py
+```
+Click on the HTTP link provided and enter the link of a start Wikipedia page and a final Wikipedia page. 
 
-The time required to search a shortest path from Costume -> Prison
-Along with the path from Microsoft -> Greek Language
-
-At the start, both were max time of 30 seconds required
-After implementation of keyword heuristic along with bidirectional search:
-Microsoft -> Greek Language: 0.5s
 ## Limitations
 
 1. **True shortest path**: 
