@@ -57,17 +57,29 @@ Samples: Could not load word2vec and start the search. Reverted to previous heur
 ## Milestones
 ### Milestone 1
 Implement a keyword heuristic. Pages that are closer in similarity to the finish pages are given a higher score. 
+
 **Deadline**: April 4, 2024
+
 **Status**: Done
+
 ### Milestone 2
 Implement category matching, where categories of the start and finish pages are also part of the heuristic. Higher scores are given to pages that are the same category as the finish page.
+
 **Deadline**: April 18, 2024
+
 **Status**: Done
+
 ### Milestone 3
 Implement a bidirectional search. Ex// bidirectional search, removing references and unnecessary text, etc
+
 **Deadline**: April 25, 2024
+
 **Status**: Done
+
 ### Milestone 4
 Try implementing word2vec and keyword heuristic libraries instead of the current search utilizing keywords from titles
+
 **Deadline**: May 2, 2024
+
 **Status**: Done
+
